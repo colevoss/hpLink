@@ -8,12 +8,16 @@
       <script type='text/javascript'src="hp-metrics.js"></script>
       <script>
         $(function(){
-          $('button').hpMetrics();
+          window.m = $.hpMetrics({
+            entrance: 'fade',
+            start: 'top',
+            speed: 100
+          });
         });
       </script>
 
       <h1>Index Page for HP Metrics Plugin</h1>
-      <button>test</button>
+      <button data-hp-metrics>test</button>
 
     </body>
 </html>
