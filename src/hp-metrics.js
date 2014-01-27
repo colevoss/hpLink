@@ -7,6 +7,30 @@
  */
 
 (function ($) {
+  var sendAnalytics;
+
+  /*
+    Sends Analytic information to Hopo database.
+
+    @private
+    @type {Function}
+    @params {Object} data - What is sent for Analytic Tracking
+   */
+
+  sendAnalytics = function(data){
+    $.ajax({
+      type: "POST",
+      url: "http://hopo.dev/cors/analytic",
+      data: data,
+      crossDomain: true,
+      success: function(data){
+        console.log(data);
+      },
+      error: function(err, erra, errb){
+        console.log(err, erra, errb);
+      }
+    });
+  };
 
   // Collection method.
   $.fn.hpMetrics = function (options) {
