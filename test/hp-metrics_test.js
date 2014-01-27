@@ -20,29 +20,34 @@
       throws(block, [expected], [message])
   */
 
-  module('jQuery#hpMetrics', {
+  module('jQuery.hpMetrics', {
     // This will run before each test in this module.
     setup: function() {
+      this.head = $('head');
       this.elems = $('<button>Click Me!</button>');
+      this.body = $('body');
+      $.hpMetrics();
+    },
+
+    teardown: function() {
     }
   });
 
 
-  test('returns button text when clicked', function(){
+  test('includes css file', function(){
     expect(1);
-    this.elems.hpMetrics();
-    this.elems.on('click', function(){
-      equal(this.innerHTML, 'Click Me! clicked' ,'button was clicked');
-    });
-    $(this.elems).trigger('click');
+    var links = this.head.find('link[href="../src/hp-metrics.css"]');
+    ok(links.length, 'Stylesheet included');
   });
 
-  module('jQuery.hpMetrics');
 
-  test('is awesome', function() {
-    expect(2);
-    strictEqual($.hpMetrics(), 'awesome.', 'should be awesome');
-    strictEqual($.hpMetrics({punctuation: '!'}), 'awesome!', 'should be thoroughly awesome');
+  test('creates modal', function(){
+    expect(1);
+    var modal = this.body.find('div.hp-metrics-modal');
+    ok(modal.length, 'Modal created');
   });
+
+
+
 
 }(jQuery));
