@@ -30,19 +30,19 @@
   height: 180px;
 }
 
-.hp-metrics-modal__initial h2.initial-header{
+.hp-metrics-modal__inner h2.modal-header{
   text-align: center;
   font-size: 32px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-weight: bold;
   color: #fff;
   padding: 15px;
-  background: #a7a9ac;
+  background: #3A90A4;
   box-shadow: 0 2px 1px #777;
 }
 
 @media (max-width: 520px){
-  .hp-metrics-modal__initial h2.initial-header{
+  .hp-metrics-modal__inner h2.modal-header{
     font-size: 24px;
   }
 }
