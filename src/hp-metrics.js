@@ -24,10 +24,10 @@
       data: data,
       crossDomain: true,
       success: function(data){
-        console.log(data);
+        window.console.log(data);
       },
       error: function(err, erra, errb){
-        console.log(err, erra, errb);
+        window.console.log(err, erra, errb);
       }
     });
   };
@@ -86,7 +86,7 @@
         speed: 'fast'
     }, options);
 
-    var modal = createBasicModal(settings);
+    var modal = createModal('initial');
 
     // -------End Initialize
 
@@ -98,7 +98,7 @@
   };
 
   // Creates modal
-  function createBasicModal() {
+  function createModal(step) {
     // Modal
     var modal = document.createElement('div');
     modal.classList.add('hp-metrics-modal');
@@ -111,6 +111,14 @@
     // Modal inner div
     var inner = document.createElement('div');
     inner.classList.add('hp-metrics-modal__inner');
+
+    var contents;
+    switch (step){
+    case 'initial':
+      contents = createInitialContent();
+    }
+
+    inner.appendChild(contents);
     modal.appendChild(inner);
 
     // Put modal in DOM
@@ -119,6 +127,35 @@
     return $(modal);
   }
 
+  function createInitialContent() {
+    var content = document.createElement('div');
+    content.classList.add('hp-metrics-modal__initial');
+
+    var contentHeader = document.createElement('h2');
+    contentHeader.classList.add('initial-header');
+    contentHeader.innerHTML = 'Processing Request. Please Wait!';
+    content.appendChild(contentHeader);
+
+    var contentLoading = document.createElement('div');
+    contentLoading.classList.add('initial-loader');
+
+    var loadingText = document.createElement('div');
+    loadingText.classList.add('loading-text');
+    loadingText.innerHTML = 'Loading';
+    contentLoading.appendChild(loadingText);
+
+    for (var _i = 1; _i <= 3; _i++){
+      var loadingBar = document.createElement('div');
+      loadingBar.classList.add('loader');
+      loadingBar.classList.add('l' + _i);
+      contentLoading.appendChild(loadingBar);
+    }
+
+
+    content.appendChild(contentLoading);
+
+    return content;
+  }
 
   /* Functin: Places modal > inner the correct amount off the screen to optimize
    *          slide in. When placement is established its made visible.
