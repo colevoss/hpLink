@@ -24,10 +24,100 @@
   box-shadow:4px 4px 4px rgba(0,0,0,0.4);
 }
 
+.hp-metrics-modal .hp-metrics-modal__zip {
+  position: relative;
+  display: block;
+  height: 160px;
+}
+
+.hp-metrics-modal .zip-content{
+  text-align: center;
+  width: 80%;
+  margin: auto;
+}
+.hp-metrics-modal__zip-field{
+  background: #E6E6E6;
+  border: 0;
+  padding: 15px;
+  font-size:16px;
+  margin-right: -1px;
+  color: #666;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.hp-metrics-modal__zip-field:focus{
+  box-shadow: 0 0 5px #3A90A4;
+  border: 0;
+}
+
+.hp-metrics-modal__zip-submit{
+  padding: 15px;
+  font-size: 16px;
+  margin: 0;
+  border: 0;
+  background: #3A90A4;
+  color: #fff;
+}
+
+.hp-metrics-modal__error{
+  color: #D1050C;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  font-size: 14px;
+  margin: 4px;
+}
+
+@media (max-width: 520px){
+  .hp-metrics-modal .hp-metrics-modal__zip{
+    font-size: 24px;
+    height: 225;
+  }
+  .hp-metrics-modal__zip-submit{
+    width: 100%;
+  }
+  .hp-metrics-modal__zip-field{
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 520px){
+  .hp-metrics-modal .hp-metrics-modal__zip{
+    font-size: 24px;
+    height: 180px;
+  }
+  .hp-metrics-modal__zip-submit{
+    width: 100%;
+    padding: 8px;
+  }
+  .hp-metrics-modal__zip-field{
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+.hp-metrics-modal .hp-metrics-modal__outro{
+  position: relative;
+  display: block;
+  height: 160px;
+}
+
+.hp-metrics-modal .hp-metrics-modal__outro .outro-content {
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+}
+.hp-metrics-modal .hp-metrics-modal__outro .outro-content .outro-text{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  color: #666;
+  font-size: 24px;
+  text-align: center;
+}
+
 .hp-metrics-modal .hp-metrics-modal__initial{
   position: relative;
   display: block;
-  height: 180px;
+  height: 160px;
 }
 
 .hp-metrics-modal__inner h2.modal-header{
@@ -36,7 +126,7 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-weight: bold;
   color: #fff;
-  padding: 15px;
+  padding: 5px;
   background: #3A90A4;
   box-shadow: 0 2px 1px #777;
 }
