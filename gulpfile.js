@@ -99,12 +99,14 @@ var buildDist = function(){
 
     // Create Github Release
     if (gutil.env.release){
+      console.log("Working on sending releas to github...".green);
+
       gulp.src('./')
         .pipe(wait(2000))
         .pipe(git.add())
-        .pipe(git.commit("[RELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
-        .pipe(git.push('origin', 'master'))
-        .pipe(git.tag("v"+pkg.version, pkg.version + "Release"));
+        .pipe(git.commit("[TESTRELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
+        .pipe(git.tag("v"+pkg.version, pkg.version + "Release"))
+        .pipe(git.push('origin', 'master'));
     }
 
   });
