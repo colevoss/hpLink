@@ -15,25 +15,36 @@
 .hp-metrics-modal .hp-metrics-modal__inner{
   display: none;
   background: #fff;
-  position: relative;
+  position: fixed;
   width: 80%;
-  /*height: 400px;*/
-  margin: auto;
+  margin-left: -40%;
+  margin-top: -20%;
+  top: 50%;
+  left: 50%;
   -webkit-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
   -moz-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
   box-shadow:4px 4px 4px rgba(0,0,0,0.4);
+}
+.hp-metrics-modal a.hp-metrics-modal__close{
+  float: right;
+  text-decoration: none;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  color: #888;
+  margin: 5px;
+
 }
 
 .hp-metrics-modal .hp-metrics-modal__zip {
   position: relative;
   display: block;
-  height: 160px;
 }
 
 .hp-metrics-modal .zip-content{
   text-align: center;
   width: 80%;
   margin: auto;
+  padding: 20px;
+  padding-bottom: 15px;
 }
 .hp-metrics-modal__zip-field{
   background: #E6E6E6;
@@ -44,6 +55,7 @@
   color: #666;
   box-sizing: border-box;
   outline: none;
+  width: 75%;
 }
 
 .hp-metrics-modal__zip-field:focus{
@@ -58,33 +70,25 @@
   border: 0;
   background: #3A90A4;
   color: #fff;
+  width: 25%;
+  text-align: center;
+}
+.hp-metrics-modal__zip-submit:hover{
+  background: #2B6273;
 }
 
 .hp-metrics-modal__error{
   color: #D1050C;
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-size: 14px;
-  margin: 4px;
+  margin: 6px;
 }
+
 
 @media (max-width: 520px){
   .hp-metrics-modal .hp-metrics-modal__zip{
     font-size: 24px;
-    height: 225;
-  }
-  .hp-metrics-modal__zip-submit{
-    width: 100%;
-  }
-  .hp-metrics-modal__zip-field{
-    width: 100%;
-    margin-right: 0;
-  }
-}
-
-@media (max-width: 520px){
-  .hp-metrics-modal .hp-metrics-modal__zip{
-    font-size: 24px;
-    height: 180px;
+    /*height: 180px;*/
   }
   .hp-metrics-modal__zip-submit{
     width: 100%;
@@ -99,13 +103,14 @@
 .hp-metrics-modal .hp-metrics-modal__outro{
   position: relative;
   display: block;
-  height: 160px;
 }
 
 .hp-metrics-modal .hp-metrics-modal__outro .outro-content {
   margin: auto;
   width: 80%;
   padding: 10px;
+  padding: 20px;
+  padding-bottom: 15px;
 }
 .hp-metrics-modal .hp-metrics-modal__outro .outro-content .outro-text{
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
@@ -117,12 +122,13 @@
 .hp-metrics-modal .hp-metrics-modal__initial{
   position: relative;
   display: block;
-  height: 160px;
 }
 
 .hp-metrics-modal__inner h2.modal-header{
   text-align: center;
   font-size: 32px;
+  margin-top: 0px;
+  margin-bottom: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-weight: bold;
   color: #fff;
@@ -143,6 +149,8 @@
   width: 40%;
   overflow: hidden;
   position: relative;
+  padding: 20px;
+  padding-bottom: 15px;
 }
 
 .loader{

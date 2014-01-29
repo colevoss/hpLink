@@ -26,7 +26,19 @@
        */
       slide: function(modal){
         var modalEntrance = {};
-        modalEntrance[settings.startPlacement] = '0px';
+        //var start = settings.startPlacement === 'right' ? 'left' : settings.startPlacement;
+        var start;
+        switch (settings.startPlacement){
+        case 'right':
+          start = 'left';
+          break;
+        case 'bottom':
+          start = 'top';
+          break;
+        default:
+          start = settings.startPlacement;
+        }
+        modalEntrance[start] = '50%';
         $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
           var inner = $('.hp-metrics-modal__inner', modal).toggle();
 
@@ -100,9 +112,10 @@
 
     // Set default Options
     var settings = $.extend({
-        entrance: 'fade',
-        startPlacement: 'top',
-        speed: 'fast'
+      entrance: 'fade',
+      startPlacement: 'top',
+      speed: 'fast',
+      removeBackground: false
     }, options);
 
     var _this = this;
@@ -136,7 +149,6 @@
             setTimeout(function(){
               modal.hpModal('close', settings, function(){
                 _this.redirectPage('http://google.com');
-                //window.location.assign('http://google.com');
               });
             }, 1500);
           }
@@ -198,6 +210,13 @@
     };
 
 
+    this.createCloseButton = function(){
+      var button = makeElement('a', 'hp-metrics-modal__close', 'Close');
+      button.setAttribute('href', '');
+      return button;
+    };
+
+
     /*
      * Validates that zip is 5 integers.
      *
@@ -244,6 +263,7 @@
       }
 
       content.appendChild(contentLoading);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
@@ -275,6 +295,7 @@
       contentZip.appendChild(contentError);
 
       content.appendChild(contentZip);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
@@ -294,6 +315,7 @@
       var outroText = makeElement('div', 'outro-text', 'Redirecting to Somewhere!');
       contentOutro.appendChild(outroText);
       content.appendChild(contentOutro);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
@@ -313,6 +335,15 @@
     // run submitZip when submit button is clicked.
     $(document).on('click','.hp-metrics-modal__zip-submit', function() {
       _this.submitZip();
+    });
+
+    $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e){
+      e.preventDefault();
+      window.console.log('clicked');
+      settings.removeBackground = true;
+      modal.hpModal('close', settings, function(){
+        modal = undefined;
+      });
     });
 
   };
@@ -337,18 +368,22 @@
     switch(placement){
     case 'top':
       offset['top'] = -(windowHeight/2 + modalHeight) + 'px';
+      offset['left'] = '50%';
       break;
 
     case 'left':
       offset['left'] = -(windowWidth/2 + modalWidth) + 'px';
+      offset['top'] = '50%';
       break;
 
     case 'right':
-      offset['right'] = -(windowWidth/2 + modalWidth) + 'px';
+      offset['left'] = (windowWidth/2 + (modalWidth * 1.5)) + 'px';
+      offset['top'] = '50%';
       break;
 
     case 'bottom':
-      offset['bottom'] = -(windowHeight/2 + modalHeight) + 'px';
+      offset['top'] = (windowHeight + (modalHeight * 2)) + 'px';
+      offset['left'] = '50%';
       break;
     }
 
