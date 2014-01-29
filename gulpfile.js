@@ -102,7 +102,7 @@ var buildDist = function(){
       gulp.src('./')
         .pipe(wait(2000))
         .pipe(git.add())
-        .pipe(git.commit("[TESTRELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
+        .pipe(git.commit("[RELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
         .pipe(git.push('origin', 'master'))
         .pipe(git.tag(tagName, pkg.version + "Release"))
         .pipe(git.push('origin', tagName));
