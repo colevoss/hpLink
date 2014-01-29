@@ -9,7 +9,8 @@ var gulp = require('gulp'),
     jasmine = require('gulp-jasmine'),
     prompt = require('prompt'),
     coffee = require('gulp-coffee'),
-    git = require('gulp-git');
+    git = require('gulp-git'),
+    wait = require('gulp-wait');
 
 
 /*
@@ -99,6 +100,7 @@ var buildDist = function(){
     // Create Github Release
     if (gutil.env.release){
       gulp.src('./')
+        .pipe(wait(2000))
         .pipe(git.add())
         .pipe(git.commit("[RELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
         .pipe(git.push('origin', 'master'))
