@@ -12,7 +12,6 @@ var gulp = require('gulp'),
     git = require('gulp-git'),
     wait = require('gulp-wait');
 
-
 /*
   Default Gulp Task. Can be ran via the following commands.
     ```bash
@@ -96,15 +95,17 @@ var buildDist = function(){
     gulp.src('src/*.css')
       .pipe(gulp.dest('dist/stylesheets'))
 
-
     // Create Github Release
     if (gutil.env.release){
+      var tagName = "v" + pkg.version;
+
       gulp.src('./')
         .pipe(wait(2000))
         .pipe(git.add())
         .pipe(git.commit("[TESTRELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
         .pipe(git.push('origin', 'master'))
-        .pipe(git.tag("v"+pkg.version, pkg.version + "Release"));
+        .pipe(git.tag(tagName, pkg.version + "Release"))
+        .pipe(git.push('origin', tagName));
     }
 
   });
