@@ -320,6 +320,10 @@
       return content;
     };
 
+    this.resetModal = function() {
+      modal = this.createModal();
+    }
+
     // -------End Initialize
     var modal = this.createModal();
 
@@ -339,10 +343,9 @@
 
     $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e){
       e.preventDefault();
-      window.console.log('clicked');
       settings.removeBackground = true;
       modal.hpModal('close', settings, function(){
-        modal = undefined;
+        _this.resetModal();
       });
     });
 
