@@ -8,92 +8,90 @@
 
 ;(function ($) {
 
+  // TODO: Remove modal argument dependency of slide and fade functions by using 'this'
+
   $.fn.hpModal = function (action, options, cb) {
     // Sets default options
     var settings = $.extend({
       entrance: 'fade',
       startPlacement: 'top',
       speed: 'fast',
-      removeBackground: true
+      removeBackground: false
     }, options);
 
 
+    var entranceMethod = {
+      /*
+       * Function: Slides in modal
+       *
+       * @params (jQuery object) modal
+       */
+      slide: function(modal){
+        var modalEntrance = {};
+        modalEntrance[settings.startPlacement] = '0px';
+        $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
+          var inner = $('.hp-metrics-modal__inner', modal).toggle();
+
+          inner.css(resolveInnerModalPosition(inner, settings.startPlacement))
+          .animate(
+            modalEntrance,
+            settings.speed,
+            cb()
+          );
+        });
+      },
+
+      /*
+       * Fades in modal
+       *
+       * @params (jQuery object) modal
+       */
+      fade: function(modal){
+        $('.hp-metrics-modal__background', modal).toggle();
+        modal.fadeIn('fast', function(){
+          $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
+        });
+      }
+    };
+
+    var exitMethod = {
+      /*
+       * Slides modal out
+       */
+      slide: function(modal){
+        var inner = $('.hp-metrics-modal__inner', modal);
+        inner.animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb());
+        if (settings.removeBackground !== false){
+          $('.hp-metrics-modal__background', modal).fadeOut('fast');
+        }
+      },
+
+      /*
+       * Fades modal out
+       */
+      fade: function(modal){
+        modal.fadeOut('fast', function(){
+          $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
+          if (settings.removeBackground !== false){
+            $('.hp-metrics-modal__background', modal).fadeOut('fast');
+          }
+        });
+      }
+    };
+
     switch (action) {
       case 'open':
-        /*
-         * Function: Slides in modal
-         *
-         * @params (jQuery object) modal
-         */
-        function slideModal(modal){
-          var modalEntrance = {};
-          modalEntrance[settings.startPlacement] = '0px';
-          $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
-            var inner = $('.hp-metrics-modal__inner', modal).toggle();
-
-            inner.css(resolveInnerModalPosition(inner, settings.startPlacement))
-            .animate(
-              modalEntrance,
-              settings.speed,
-              cb()
-            );
-          });
-        }
-
-        /*
-         * Function: Fades in modal
-         *
-         * @params (jQuery object) modal
-         */
-        function fadeModal(modal){
-          $('.hp-metrics-modal__background', modal).toggle();
-          modal.fadeIn('fast', function(){
-            $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
-          });
-        }
-
-        var entranceMethod = {
-          fade: fadeModal,
-          slide: slideModal
-        };
-
-
         entranceMethod[settings.entrance](this);
-        // Break case
-        break;
+        break; // Break Case
 
       case 'replaceContent':
         var inner = $('.hp-metrics-modal__inner');
         inner.html(settings.content);
-        break; // Break case
+        break; // Break Case
 
       case 'close':
-        function slideModalOut(modal){
-          var inner = $('.hp-metrics-modal__inner', modal);
-          inner.animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb());
-          if (settings.removeBackground !== false){
-            $('.hp-metrics-modal__background', modal).fadeOut('fast');
-          }
-        }
-
-        function fadeModalOut(modal){
-          modal.fadeOut('fast', function(){
-            $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
-            if (settings.removeBackground !== false){
-              $('.hp-metrics-modal__background', modal).fadeOut('fast');
-            }
-          });
-        }
-
-        var exitMethod = {
-          fade: fadeModalOut,
-          slide: slideModalOut
-        };
-
-
         exitMethod[settings.entrance](this);
-
-        break;
+        break; // Break Case
     }
     return this;
   };
@@ -112,11 +110,14 @@
     var _this = this;
 
     /*
-      Sends Analytic information to Hopo database.
-
-      @private
-      @type {Function}
-      @params {Object} data - What is sent for Analytic Tracking
+     * Sends Analytic information to Hopo database.
+     *
+     * @private
+     * @type {Function}
+     * @params {Object} data - What is sent for Analytic Tracking
+     *
+     * TODO: Break response types into different functions.
+     *
      */
     this.sendAnalytics = function(data){
       $.ajax({
@@ -135,7 +136,7 @@
               modal.hpModal('replaceContent', {content: _this.createOutroContent()});
             }, 1000);
             setTimeout(function(){
-              modal.hpModal('close', {}, function(){
+              modal.hpModal('close', settings, function(){
                 window.location.assign('http://google.com');
               });
             }, 1500);
@@ -147,6 +148,12 @@
       });
     };
 
+
+    /*
+     * Creates modal background, and inner modal and also fills it with the initial modal.
+     *
+     * Returns modal as a jQuery object.
+     */
     this.createModal = function(){
       // Modal
       var modal = document.createElement('div');
@@ -172,6 +179,16 @@
       return $(modal);
     };
 
+
+    /*
+     * Validates that zip is 5 integers.
+     *
+     * Replaces modal with outro if zip is valid.
+     *
+     * Redirects to appropriate URL.
+     *
+     * TODO: Break redirection into its own function.
+     */
     this.submitZip = function(){
       var zip = $('.hp-metrics-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)){
@@ -187,8 +204,9 @@
       }
     };
 
+
     /*
-     * Function: Creates and returns TML for intial modal
+     * Creates and returns HTML for intial modal including loading animation
      *
      */
     this.createInitialContent = function() {
@@ -213,6 +231,11 @@
       return content;
     };
 
+
+    /*
+     * Creates and returns HTML for zip form modal.
+     *
+     */
     this.createZipContent = function() {
       var content = makeElement('div', 'hp-metrics-modal__zip');
 
@@ -239,6 +262,11 @@
       return content;
     };
 
+
+    /*
+     * Creates and returns HTML for outro modal.
+     *
+     */
     this.createOutroContent = function(){
       var content = makeElement('div', 'hp-metrics-modal__outro');
 
@@ -265,22 +293,21 @@
       });
     });
 
+    // run submitZip when submit button is clicked.
     $(document).on('click','.hp-metrics-modal__zip-submit', function() {
       _this.submitZip();
     });
 
-
-
   };
 
-
-  /* Functin: Places modal > inner the correct amount off the screen to optimize
-   *          slide in. When placement is established its made visible.
+  /*
+   * Places modal > inner the correct amount off the screen to optimize
+   * slide in. When placement is established its made visible.
    *
    * @params (jQuery object) inner
    * @params (String) placement
    *
-   * Returns: inner jQuery Element
+   * Returns: (Object) offset = {left: '-856px'}
    */
   function resolveInnerModalPosition(inner, placement) {
     inner = $(inner);
@@ -311,11 +338,20 @@
     return offset;
   }
 
+
   // Function: Includes stylesheet in <head> to access modal
   function includeCSS(){
     $('head').append('<link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"</link>');
   }
 
+
+  /*
+   * Creates element, assigns class, and sets innerHTML (optional)
+   *
+   * @params (String) elType = 'div'
+   * @params (String) elClass = 'example-class-for-object'
+   * @params (String) content = 'Example text for object'
+   */
   function makeElement(elType, elClass, content){
     var el = document.createElement(elType);
     el.classList.add(elClass);
