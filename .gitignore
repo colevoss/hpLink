@@ -3,3 +3,5 @@
 
 *.vim
 *.vi
+
+test/test.js

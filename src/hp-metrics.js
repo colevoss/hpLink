@@ -292,19 +292,19 @@
     var offset = {};
     switch(placement){
     case 'top':
-      offset['top'] = -(windowHeight/2 + modalHeight) + 'px';
+      offset.top = -(windowHeight/2 + modalHeight) + 'px';
       break;
 
     case 'left':
-      offset['left'] = -(windowWidth/2 + modalWidth) + 'px';
+      offset.left = -(windowWidth/2 + modalWidth) + 'px';
       break;
 
     case 'right':
-      offset['right'] = -(windowWidth/2 + modalWidth) + 'px';
+      offset.right = -(windowWidth/2 + modalWidth) + 'px';
       break;
 
     case 'bottom':
-      offset['bottom'] = -(windowHeight/2 + modalHeight) + 'px';
+      offset.bottom = -(windowHeight/2 + modalHeight) + 'px';
       break;
     }
 
