@@ -26,7 +26,9 @@
   box-shadow:4px 4px 4px rgba(0,0,0,0.4);
 }
 .hp-metrics-modal a.hp-metrics-modal__close{
-  float: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
   text-decoration: none;
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   color: #888;
