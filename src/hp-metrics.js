@@ -8,8 +8,6 @@
 
 ;(function ($) {
 
-  // TODO: Remove modal argument dependency of slide and fade functions by using 'this'
-
   $.fn.hpModal = function (action, options, cb) {
     // Sets default options
     var settings = $.extend({
@@ -137,7 +135,8 @@
             }, 1000);
             setTimeout(function(){
               modal.hpModal('close', settings, function(){
-                window.location.assign('http://google.com');
+                _this.redirectPage('http://google.com');
+                //window.location.assign('http://google.com');
               });
             }, 1500);
           }
@@ -146,6 +145,25 @@
           window.console.log(err, erra, errb);
         }
       });
+    };
+
+
+    /*
+     * Redirects page to new url with formatted params if provided
+     * 
+     * @params (String) url
+     * @params (Object) params
+     */
+    this.redirectPage = function(url, params) {
+      var redirectTo = url;
+      if (params) {
+        redirectTo = redirectTo + "?";
+        for (var _k in params) {
+          redirectTo = redirectTo + _k + "=" + params[_k] + "&";
+        }
+        redirectTo = redirectTo.replace(/&$/, '');
+      }
+      window.location.assign(redirectTo);
     };
 
 
@@ -187,7 +205,6 @@
      *
      * Redirects to appropriate URL.
      *
-     * TODO: Break redirection into its own function.
      */
     this.submitZip = function(){
       var zip = $('.hp-metrics-modal__zip-field').val();
@@ -196,7 +213,7 @@
         modal.hpModal('replaceContent', {content: _this.createOutroContent()});
         setTimeout(function(){
           modal.hpModal('close', $.extend({removeBackground: false}, settings), function(){
-            window.location.replace('http://google.com?zip=' + zip);
+            _this.redirectPage('http://google.com', {zip: zip});
           });
         }, 1500);
       } else {
