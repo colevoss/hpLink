@@ -370,23 +370,23 @@
     var offset = {};
     switch(placement){
     case 'top':
-      offset['top'] = -(windowHeight/2 + modalHeight) + 'px';
-      offset['left'] = '50%';
+      offset.top = -(windowHeight/2 + modalHeight) + 'px';
+      offset.left = '50%';
       break;
 
     case 'left':
-      offset['left'] = -(windowWidth/2 + modalWidth) + 'px';
-      offset['top'] = '50%';
+      offset.left = -(windowWidth/2 + modalWidth) + 'px';
+      offset.top = '50%';
       break;
 
     case 'right':
-      offset['left'] = (windowWidth/2 + (modalWidth * 1.5)) + 'px';
-      offset['top'] = '50%';
+      offset.left = (windowWidth/2 + (modalWidth * 1.5)) + 'px';
+      offset.top = '50%';
       break;
 
     case 'bottom':
-      offset['top'] = (windowHeight + (modalHeight * 2)) + 'px';
-      offset['left'] = '50%';
+      offset.top = (windowHeight + (modalHeight * 2)) + 'px';
+      offset.left = '50%';
       break;
     }
 
