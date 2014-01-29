@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     pkg = require('./package.json'),
     jasmine = require('gulp-jasmine'),
+    prompt = require('prompt'),
     coffee = require('gulp-coffee');
 
 
@@ -60,31 +61,37 @@ var buildDist = function(a, b,c){
   if (bumpTypes.lastIndexOf(bumpType.toLowerCase()) == -1)
     return console.log("\nInvalid build type. Must be major, minor, or patch\n".red);
 
-  // test
-  testCode();
+  prompt.start();
+  prompt.get('Confirm Build Process (y/n)', function(err, result){
+    result = result[Object.keys(result)[0]]
+    if (result != 'y') return;
 
-  // Bump Version number
-  gulp.src('./package.json')
-    .pipe(bump({ type: bumpType.toLowerCase() }))
-    .pipe(gulp.dest('./'));
+    // test
+    testCode();
 
-  // Build Minified and unmified copies
-  gulp.src('src/*.js')
-    .pipe(jshint()) // jslint
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(uglify()) // Uglify && Minify
-    .pipe(rename(pkg.name + '.min.js'))
-    .pipe(gulp.dest('dist/scripts'))
+    // Bump Version number
+    gulp.src('./package.json')
+      .pipe(bump({ type: bumpType.toLowerCase() }))
+      .pipe(gulp.dest('./'));
 
-  gulp.src('src/*.js')
-    .pipe(jshint()) // jslint
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(rename(pkg.name + '.js'))
-    .pipe(gulp.dest('dist/scripts'))
+    // Build Minified and unmified copies
+    gulp.src('src/*.js')
+      .pipe(jshint()) // jslint
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(uglify()) // Uglify && Minify
+      .pipe(rename(pkg.name + '.min.js'))
+      .pipe(gulp.dest('dist/scripts'))
 
-  // TODO: Build CSS 
-  gulp.src('src/*.css')
-    .pipe(gulp.dest('dist/stylesheets'))
+    gulp.src('src/*.js')
+      .pipe(jshint()) // jslint
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(rename(pkg.name + '.js'))
+      .pipe(gulp.dest('dist/scripts'))
+
+    // TODO: Build CSS 
+    gulp.src('src/*.css')
+      .pipe(gulp.dest('dist/stylesheets'))
+  });
 }
 
 
