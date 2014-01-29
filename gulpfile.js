@@ -99,19 +99,16 @@ var buildDist = function(){
 
     // Create Github Release
     if (gutil.env.release){
-      console.log("Working on sending releas to github...".green);
-
       gulp.src('./')
         .pipe(wait(2000))
         .pipe(git.add())
         .pipe(git.commit("[TESTRELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
-        .pipe(git.tag("v"+pkg.version, pkg.version + "Release"))
-        .pipe(git.push('origin', 'master'));
+        .pipe(git.push('origin', 'master'))
+        .pipe(git.tag("v"+pkg.version, pkg.version + "Release"));
     }
 
   });
 }
-
 
 /*
   Test Tool. This function can be ran at command line by:
@@ -127,6 +124,10 @@ var testCode = function(){
     .pipe(jasmine()); // Run jasmine tests
 }
 
+
+/*
+  Bash Implementations.
+ */
 
 gulp.task('default', code);
 gulp.task('code', code);
