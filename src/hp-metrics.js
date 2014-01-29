@@ -14,86 +14,94 @@
       entrance: 'fade',
       startPlacement: 'top',
       speed: 'fast',
-      removeBackground: true
+      removeBackground: false
     }, options);
 
 
+    var entranceMethod = {
+      /*
+       * Function: Slides in modal
+       *
+       * @params (jQuery object) modal
+       */
+      slide: function(modal){
+        var modalEntrance = {};
+        //var start = settings.startPlacement === 'right' ? 'left' : settings.startPlacement;
+        var start;
+        switch (settings.startPlacement){
+        case 'right':
+          start = 'left';
+          break;
+        case 'bottom':
+          start = 'top';
+          break;
+        default:
+          start = settings.startPlacement;
+        }
+        modalEntrance[start] = '50%';
+        $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
+          var inner = $('.hp-metrics-modal__inner', modal).toggle();
+
+          inner.css(resolveInnerModalPosition(inner, settings.startPlacement))
+          .animate(
+            modalEntrance,
+            settings.speed,
+            cb()
+          );
+        });
+      },
+
+      /*
+       * Fades in modal
+       *
+       * @params (jQuery object) modal
+       */
+      fade: function(modal){
+        $('.hp-metrics-modal__background', modal).toggle();
+        modal.fadeIn('fast', function(){
+          $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
+        });
+      }
+    };
+
+    var exitMethod = {
+      /*
+       * Slides modal out
+       */
+      slide: function(modal){
+        var inner = $('.hp-metrics-modal__inner', modal);
+        inner.animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb());
+        if (settings.removeBackground !== false){
+          $('.hp-metrics-modal__background', modal).fadeOut('fast');
+        }
+      },
+
+      /*
+       * Fades modal out
+       */
+      fade: function(modal){
+        modal.fadeOut('fast', function(){
+          $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
+          if (settings.removeBackground !== false){
+            $('.hp-metrics-modal__background', modal).fadeOut('fast');
+          }
+        });
+      }
+    };
+
     switch (action) {
       case 'open':
-        /*
-         * Function: Slides in modal
-         *
-         * @params (jQuery object) modal
-         */
-        function slideModal(modal){
-          var modalEntrance = {};
-          modalEntrance[settings.startPlacement] = '0px';
-          $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
-            var inner = $('.hp-metrics-modal__inner', modal).toggle();
-
-            inner.css(resolveInnerModalPosition(inner, settings.startPlacement))
-            .animate(
-              modalEntrance,
-              settings.speed,
-              cb()
-            );
-          });
-        }
-
-        /*
-         * Function: Fades in modal
-         *
-         * @params (jQuery object) modal
-         */
-        function fadeModal(modal){
-          $('.hp-metrics-modal__background', modal).toggle();
-          modal.fadeIn('fast', function(){
-            $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
-          });
-        }
-
-        var entranceMethod = {
-          fade: fadeModal,
-          slide: slideModal
-        };
-
-
         entranceMethod[settings.entrance](this);
-        // Break case
-        break;
+        break; // Break Case
 
       case 'replaceContent':
         var inner = $('.hp-metrics-modal__inner');
         inner.html(settings.content);
-        break; // Break case
+        break; // Break Case
 
       case 'close':
-        function slideModalOut(modal){
-          var inner = $('.hp-metrics-modal__inner', modal);
-          inner.animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb());
-          if (settings.removeBackground !== false){
-            $('.hp-metrics-modal__background', modal).fadeOut('fast');
-          }
-        }
-
-        function fadeModalOut(modal){
-          modal.fadeOut('fast', function(){
-            $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
-            if (settings.removeBackground !== false){
-              $('.hp-metrics-modal__background', modal).fadeOut('fast');
-            }
-          });
-        }
-
-        var exitMethod = {
-          fade: fadeModalOut,
-          slide: slideModalOut
-        };
-
-
         exitMethod[settings.entrance](this);
-
-        break;
+        break; // Break Case
     }
     return this;
   };
@@ -104,19 +112,23 @@
 
     // Set default Options
     var settings = $.extend({
-        entrance: 'fade',
-        startPlacement: 'top',
-        speed: 'fast'
+      entrance: 'fade',
+      startPlacement: 'top',
+      speed: 'fast',
+      removeBackground: false
     }, options);
 
     var _this = this;
 
     /*
-      Sends Analytic information to Hopo database.
-
-      @private
-      @type {Function}
-      @params {Object} data - What is sent for Analytic Tracking
+     * Sends Analytic information to Hopo database.
+     *
+     * @private
+     * @type {Function}
+     * @params {Object} data - What is sent for Analytic Tracking
+     *
+     * TODO: Break response types into different functions.
+     *
      */
     this.sendAnalytics = function(data){
       $.ajax({
@@ -135,8 +147,8 @@
               modal.hpModal('replaceContent', {content: _this.createOutroContent()});
             }, 1000);
             setTimeout(function(){
-              modal.hpModal('close', {}, function(){
-                window.location.assign('http://google.com');
+              modal.hpModal('close', settings, function(){
+                _this.redirectPage('http://google.com');
               });
             }, 1500);
           }
@@ -147,6 +159,31 @@
       });
     };
 
+
+    /*
+     * Redirects page to new url with formatted params if provided
+     * 
+     * @params (String) url
+     * @params (Object) params
+     */
+    this.redirectPage = function(url, params) {
+      var redirectTo = url;
+      if (params) {
+        redirectTo = redirectTo + "?";
+        for (var _k in params) {
+          redirectTo = redirectTo + _k + "=" + params[_k] + "&";
+        }
+        redirectTo = redirectTo.replace(/&$/, '');
+      }
+      window.location.assign(redirectTo);
+    };
+
+
+    /*
+     * Creates modal background, and inner modal and also fills it with the initial modal.
+     *
+     * Returns modal as a jQuery object.
+     */
     this.createModal = function(){
       // Modal
       var modal = document.createElement('div');
@@ -172,6 +209,22 @@
       return $(modal);
     };
 
+
+    this.createCloseButton = function(){
+      var button = makeElement('a', 'hp-metrics-modal__close', 'Close');
+      button.setAttribute('href', '');
+      return button;
+    };
+
+
+    /*
+     * Validates that zip is 5 integers.
+     *
+     * Replaces modal with outro if zip is valid.
+     *
+     * Redirects to appropriate URL.
+     *
+     */
     this.submitZip = function(){
       var zip = $('.hp-metrics-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)){
@@ -179,7 +232,7 @@
         modal.hpModal('replaceContent', {content: _this.createOutroContent()});
         setTimeout(function(){
           modal.hpModal('close', $.extend({removeBackground: false}, settings), function(){
-            window.location.replace('http://google.com?zip=' + zip);
+            _this.redirectPage('http://google.com', {zip: zip});
           });
         }, 1500);
       } else {
@@ -187,8 +240,9 @@
       }
     };
 
+
     /*
-     * Function: Creates and returns TML for intial modal
+     * Creates and returns HTML for intial modal including loading animation
      *
      */
     this.createInitialContent = function() {
@@ -209,10 +263,16 @@
       }
 
       content.appendChild(contentLoading);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
 
+
+    /*
+     * Creates and returns HTML for zip form modal.
+     *
+     */
     this.createZipContent = function() {
       var content = makeElement('div', 'hp-metrics-modal__zip');
 
@@ -235,10 +295,16 @@
       contentZip.appendChild(contentError);
 
       content.appendChild(contentZip);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
 
+
+    /*
+     * Creates and returns HTML for outro modal.
+     *
+     */
     this.createOutroContent = function(){
       var content = makeElement('div', 'hp-metrics-modal__outro');
 
@@ -249,6 +315,7 @@
       var outroText = makeElement('div', 'outro-text', 'Redirecting to Somewhere!');
       contentOutro.appendChild(outroText);
       content.appendChild(contentOutro);
+      content.appendChild(this.createCloseButton());
 
       return content;
     };
@@ -265,22 +332,30 @@
       });
     });
 
+    // run submitZip when submit button is clicked.
     $(document).on('click','.hp-metrics-modal__zip-submit', function() {
       _this.submitZip();
     });
 
-
+    $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e){
+      e.preventDefault();
+      window.console.log('clicked');
+      settings.removeBackground = true;
+      modal.hpModal('close', settings, function(){
+        modal = undefined;
+      });
+    });
 
   };
 
-
-  /* Functin: Places modal > inner the correct amount off the screen to optimize
-   *          slide in. When placement is established its made visible.
+  /*
+   * Places modal > inner the correct amount off the screen to optimize
+   * slide in. When placement is established its made visible.
    *
    * @params (jQuery object) inner
    * @params (String) placement
    *
-   * Returns: inner jQuery Element
+   * Returns: (Object) offset = {left: '-856px'}
    */
   function resolveInnerModalPosition(inner, placement) {
     inner = $(inner);
@@ -293,29 +368,42 @@
     switch(placement){
     case 'top':
       offset.top = -(windowHeight/2 + modalHeight) + 'px';
+      offset.left = '50%';
       break;
 
     case 'left':
       offset.left = -(windowWidth/2 + modalWidth) + 'px';
+      offset.top = '50%';
       break;
 
     case 'right':
-      offset.right = -(windowWidth/2 + modalWidth) + 'px';
+      offset.left = (windowWidth/2 + (modalWidth * 1.5)) + 'px';
+      offset.top = '50%';
       break;
 
     case 'bottom':
-      offset.bottom = -(windowHeight/2 + modalHeight) + 'px';
+      offset.top = (windowHeight + (modalHeight * 2)) + 'px';
+      offset.left = '50%';
       break;
     }
 
     return offset;
   }
 
+
   // Function: Includes stylesheet in <head> to access modal
   function includeCSS(){
     $('head').append('<link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"</link>');
   }
 
+
+  /*
+   * Creates element, assigns class, and sets innerHTML (optional)
+   *
+   * @params (String) elType = 'div'
+   * @params (String) elClass = 'example-class-for-object'
+   * @params (String) content = 'Example text for object'
+   */
   function makeElement(elType, elClass, content){
     var el = document.createElement(elType);
     el.classList.add(elClass);
