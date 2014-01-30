@@ -1,6 +1,6 @@
 /**
  * hp-metrics 
- * @version v0.0.1 
+ * @version v0.0.2 
  * @link https://github.com/colevoss/hp-metrics 
  * @license  
  * 
@@ -107,6 +107,7 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-size: 14px;
   margin: 6px;
+  text-align: center;
 }
 
 

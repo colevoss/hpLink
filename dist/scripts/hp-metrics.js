@@ -1,6 +1,6 @@
 /**
  * hp-metrics 
- * @version v0.0.1 
+ * @version v0.0.2 
  * @link https://github.com/colevoss/hp-metrics 
  * @license  
  */ 
@@ -159,6 +159,7 @@
         },
         error: function(err, erra, errb) {
           window.
+          _.resolveWarning('An error has occured. Please try again later.');
         }
       });
     };
@@ -283,6 +284,7 @@
      */
     _.createInitialContent = function(text) {
       var content,  // Container of initial content
+          contentError,
           contentHeader,  // header..."Processing Request!"
           contentLoading,  // Container of loading elements
           loadingText;
@@ -304,6 +306,9 @@
       }
 
       content.appendChild(contentLoading);
+
+      contentError = makeElement('div', 'hp-metrics-modal__error');
+      contentLoading.appendChild(contentError);
 
       content.appendChild(_.createCloseButton());
 
