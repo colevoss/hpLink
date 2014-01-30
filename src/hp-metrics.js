@@ -1,11 +1,3 @@
-/*
- * hp_metrics
- *
- *
- * Copyright (c) 2014 Cole Voss
- * Licensed under the MIT license.
- */
-
 ;(function ($, _) {
 
   $.fn.hpModal = function (action, options, cb) {

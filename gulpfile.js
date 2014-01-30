@@ -10,7 +10,16 @@ var gulp = require('gulp'),
     prompt = require('prompt'),
     coffee = require('gulp-coffee'),
     git = require('gulp-git'),
-    wait = require('gulp-wait');
+    wait = require('gulp-wait'),
+    removeLogs = require('gulp-removelogs'),
+    notify = require('gulp-notify'),
+    minifyCSS = require('gulp-minify-css'),
+    cssLint = require('gulp-csslint'),
+    header = require('gulp-header');
+
+var banner = ['/**', ' * <%= pkg.name %> ', ' * @version v<%= pkg.version %> ', ' * @link <%= pkg.homepage %> ', ' * @license <%= pkg.licenses.type %> ', ' */ \n\n'].join("\n");
+var cssBanner = ['/**', ' * <%= pkg.name %> ', ' * @version v<%= pkg.version %> ', ' * @link <%= pkg.homepage %> ', ' * @license <%= pkg.licenses.type %> ', ' * ', ' * Modify this file if you would like styling to fit more into your page. ', ' */ \n\n'].join("\n");
+var cssMinBanner = ['/**', ' * <%= pkg.name %> ', ' * @version v<%= pkg.version %> ', ' * @link <%= pkg.homepage %> ', ' * @license <%= pkg.licenses.type %> ', ' */ \n\n'].join("\n");
 
 /*
   Default Gulp Task. Can be ran via the following commands.
@@ -30,6 +39,10 @@ var code = function(){
       .pipe(jshint()) // JSHint
       .pipe(jshint.reporter('jshint-stylish'));
 
+    gulp.src('src/*.css')
+      .pipe(cssLint({'box-sizing': false}))
+      .pipe(cssLint.reporter())
+
     testCode();
   });
 }
@@ -39,7 +52,7 @@ var code = function(){
     `gulp build --type STRING`
 
   It will run a jslint, code test, version bump,
-    uglifyier, minifiyer.
+    uglifyier, minifiyer, console.log remover, script header.
 
   @params (String) build bump ammount
     major = first number = 1.0.0
@@ -66,7 +79,7 @@ var buildDist = function(){
     return console.log("\nInvalid build type. Must be major, minor, or patch\n".red);
 
   prompt.start();
-  prompt.get('Confirm Build Process (y/n)', function(err, result){
+  prompt.get('Confirm Build Process (y/n)'.green, function(err, result){
     result = result[Object.keys(result)[0]]
     if (result != 'y') return;
 
@@ -77,23 +90,37 @@ var buildDist = function(){
       .pipe(bump({ type: bumpType.toLowerCase() }))
       .pipe(gulp.dest('./'));
 
-    // Build Minified and unmified copies
+    // Build Minified and unminified Javascript
     gulp.src('src/*.js')
       .pipe(jshint()) // jslint
       .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(header(banner, {pkg: pkg}))
       .pipe(uglify()) // Uglify && Minify
+      .pipe(removeLogs())
       .pipe(rename(pkg.name + '.min.js'))
       .pipe(gulp.dest('dist/scripts'))
 
     gulp.src('src/*.js')
       .pipe(jshint()) // jslint
       .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(removeLogs())
+      .pipe(header(banner, {pkg: pkg}))
       .pipe(rename(pkg.name + '.js'))
       .pipe(gulp.dest('dist/scripts'))
 
-    // TODO: Build CSS 
+    // Build Minified and unminified copies of CSS
     gulp.src('src/*.css')
+      .pipe(header(cssBanner, {pkg: pkg}))
+      .pipe(cssLint({'box-sizing':false}))
+      .pipe(cssLint.reporter())
+      .pipe(gulp.dest('dist/stylesheets'));
+
+    gulp.src('src/*.css')
+      .pipe(minifyCSS())
+      .pipe(header(cssMinBanner, {pkg: pkg}))
+      .pipe(rename(pkg.name + '.min.css'))
       .pipe(gulp.dest('dist/stylesheets'))
+      .pipe(notify({ message: pkg.name + " Version: " + pkg.version + " successfully built."}));
 
     // Create Github Release
     if (gutil.env.release){
