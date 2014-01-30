@@ -6,10 +6,13 @@
  * Licensed under the MIT license.
  */
 
-;(function ($) {
+;(function ($, _) {
 
   $.fn.hpModal = function (action, options, cb) {
     // Sets default options
+    var entranceMethod = {},
+        exitMethod = {};
+
     var settings = $.extend({
       entrance: 'fade',
       startPlacement: 'top',
@@ -18,36 +21,33 @@
     }, options);
 
 
-    var entranceMethod = {
+    entranceMethod = {
       /*
        * Function: Slides in modal
        *
        * @params (jQuery object) modal
        */
-      slide: function(modal){
+      slide: function(modal) {
         var modalEntrance = {};
-        //var start = settings.startPlacement === 'right' ? 'left' : settings.startPlacement;
         var start;
-        switch (settings.startPlacement){
+
+        switch (settings.startPlacement) {
         case 'right':
           start = 'left';
           break;
+
         case 'bottom':
           start = 'top';
           break;
+
         default:
           start = settings.startPlacement;
         }
         modalEntrance[start] = '50%';
-        $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function(){
-          var inner = $('.hp-metrics-modal__inner', modal).toggle();
-
-          inner.css(resolveInnerModalPosition(inner, settings.startPlacement))
-          .animate(
-            modalEntrance,
-            settings.speed,
-            cb()
-          );
+        $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function() {
+          $('.hp-metrics-modal__inner', modal).toggle(true)
+            .css(resolveInnerModalPosition(inner, settings.startPlacement))
+            .animate(modalEntrance, settings.speed, cb());
         });
       },
 
@@ -56,31 +56,34 @@
        *
        * @params (jQuery object) modal
        */
-      fade: function(modal){
+      fade: function(modal) {
         $('.hp-metrics-modal__background', modal).toggle();
-        modal.fadeIn('fast', function(){
+        modal.fadeIn('fast', function() {
           $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
         });
       }
     };
 
-    var exitMethod = {
+    exitMethod = {
       /*
        * Slides modal out
        */
-      slide: function(modal){
-        var inner = $('.hp-metrics-modal__inner', modal);
-        inner.animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb());
+      slide: function(modal) {
+        $('.hp-metrics-modal__inner', modal)
+          .animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb())
+          .toggle(false);
         if (settings.removeBackground !== false){
-          $('.hp-metrics-modal__background', modal).fadeOut('fast');
+          $('.hp-metrics-modal__background', modal).fadeOut('fast', function() {
+            $('.hp-metrics-modal').toggle();
+          });
         }
       },
 
       /*
        * Fades modal out
        */
-      fade: function(modal){
-        modal.fadeOut('fast', function(){
+      fade: function(modal) {
+        modal.fadeOut('fast', function() {
           $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
           if (settings.removeBackground !== false){
             $('.hp-metrics-modal__background', modal).fadeOut('fast');
@@ -97,6 +100,9 @@
       case 'replaceContent':
         var inner = $('.hp-metrics-modal__inner');
         inner.html(settings.content);
+        if (typeof(cb) !== 'undefined'){
+          cb();
+        }
         break; // Break Case
 
       case 'close':
@@ -106,19 +112,31 @@
     return this;
   };
 
-  $.hpMetrics = function(options){
-    // ------- Initialize
-    includeCSS();
+  $.hpMetrics = function(options) {
+    /* ---------------------------------------------------- */
+    /* -------------------- INITIALIZE -------------------- */
+    /* ---------------------------------------------------- */
 
-    // Set default Options
-    var settings = $.extend({
+    var modal; // Local variable set to createModal() below
+
+    var settings = $.extend({  // Set default Options
       entrance: 'fade',
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
     }, options);
 
-    var _this = this;
+    includeCSS();
+
+    /* ---------------------------------------------------- */
+    /* ------------------ END INITIALIZE ------------------ */
+    /* ---------------------------------------------------- */
+
+
+
+    /* ------------------------------------------------------------ */
+    /* ------------------ DEFINE PRIVATE METHODS ------------------ */
+    /* ------------------------------------------------------------ */
 
     /*
      * Sends Analytic information to Hopo database.
@@ -130,33 +148,44 @@
      * TODO: Break response types into different functions.
      *
      */
-    this.sendAnalytics = function(data){
+    _.sendAnalytics = function(data, route) {
       $.ajax({
         type: "POST",
         //url: "http://honestpolicy.com/cors/analytic", //Production
-        url: "http://hopo.dev/cors/analytic", //Development
+        url: "http://hopo.dev/cors/" + route, // Development
         data: data,
         crossDomain: true,
-        success: function(data){
-          if (data.response === 'zip_required') {
-            setTimeout(function(){
-              modal.hpModal('replaceContent', {content: _this.createZipContent()});
-            }, 1000);
-          } else if (data.response === 'no_zip'){
-            setTimeout(function(){
-              modal.hpModal('replaceContent', {content: _this.createOutroContent()});
-            }, 1000);
-            setTimeout(function(){
-              modal.hpModal('close', settings, function(){
-                _this.redirectPage('http://google.com');
-              });
-            }, 1500);
-          }
+        success: function(data) {
+          _.analyticsCallBacks[data.callback](data);
         },
-        error: function(err, erra, errb){
+        error: function(err, erra, errb) {
           window.console.log(err, erra, errb);
         }
       });
+    };
+
+
+    _.analyticsCallBacks = {
+      zipRequired: function(data) {
+        _.redirectURL = data.redirect_to;
+        modal.hpModal('replaceContent', {content: _.createZipContent()});
+      },
+
+      zipNotRequired: function(data) {
+        modal.hpModal('replaceContent', {content: _.createOutroContent()});
+        modal.hpModal('close', settings, function() {
+          _.redirectPage(data.redirect_to);
+        });
+      },
+
+      zipValidate: function(data) {
+        if (data.zip) {
+          _.redirectURL = _.redirectURL + '&zip=' + data.zip;
+          _.redirectPage(_.redirectURL);
+        } else {
+          _.resolveWarning('Invalid Zip Code.');
+        }
+      }
     };
 
 
@@ -166,7 +195,7 @@
      * @params (String) url
      * @params (Object) params
      */
-    this.redirectPage = function(url, params) {
+    _.redirectPage = function(url, params) {
       var redirectTo = url;
       if (params) {
         redirectTo = redirectTo + "?";
@@ -184,35 +213,39 @@
      *
      * Returns modal as a jQuery object.
      */
-    this.createModal = function(){
-      // Modal
-      var modal = document.createElement('div');
+    _.createModal = function() {
+      var background,  // Modal Background
+          content,  // Contents of inner modal
+          inner;  // Interactive portion of modal
+      var modal = document.createElement('div');  // Modal container
       modal.classList.add('hp-metrics-modal');
 
-      // Modal background
-      var background = document.createElement('div');
+      background = document.createElement('div'); // Modal Background
       background.classList.add('hp-metrics-modal__background');
       modal.appendChild(background);
 
-      // Modal inner div
-      var inner = document.createElement('div');
+      inner = document.createElement('div');  // Modal inner div
       inner.classList.add('hp-metrics-modal__inner');
 
-      var contents = this.createInitialContent();
+      contents = _.createInitialContent();
 
       inner.appendChild(contents);
       modal.appendChild(inner);
 
-      // Put modal in DOM
-      $('body').append(modal);
+      $('body').append(modal);  // Put modal in DOM
 
       return $(modal);
     };
 
 
-    this.createCloseButton = function(){
-      var button = makeElement('a', 'hp-metrics-modal__close', 'Close');
+    /*
+     * Creates close button
+     */
+    _.createCloseButton = function() {
+      var button;
+      button = makeElement('a', 'hp-metrics-modal__close', 'Close');
       button.setAttribute('href', '');
+
       return button;
     };
 
@@ -225,19 +258,23 @@
      * Redirects to appropriate URL.
      *
      */
-    this.submitZip = function(){
+    _.submitZip = function() {
       var zip = $('.hp-metrics-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)){
-        $('.hp-metrics-modal__error').text('');
-        modal.hpModal('replaceContent', {content: _this.createOutroContent()});
-        setTimeout(function(){
-          modal.hpModal('close', $.extend({removeBackground: false}, settings), function(){
-            _this.redirectPage('http://google.com', {zip: zip});
-          });
-        }, 1500);
+        _.sendAnalytics({zip: zip}, 'validate_zip');
       } else {
-        $('.hp-metrics-modal__error').text('Invalid Zip Code.');
+        _.resolveWarning('Invalid Zip Code.');
       }
+    };
+
+    _.resolveWarning = function(text) {
+      if (typeof(text) === 'undefined') {
+        text = '';
+        $('.hp-metrics-modal__zip-field').attr('data-hp-metrics__error', 'false');
+      } else {
+        $('.hp-metrics-modal__zip-field').attr('data-hp-metrics__error', 'true');
+      }
+      $('.hp-metrics-modal__error').text(text);
     };
 
 
@@ -245,25 +282,31 @@
      * Creates and returns HTML for intial modal including loading animation
      *
      */
-    this.createInitialContent = function() {
-      var content = makeElement('div', 'hp-metrics-modal__initial');
+    _.createInitialContent = function(text) {
+      var content,  // Container of initial content
+          contentHeader,  // header..."Processing Request!"
+          contentLoading,  // Container of loading elements
+          loadingText;
 
-      var contentHeader = makeElement('h2', 'modal-header', 'Processing Request!');
+      content = makeElement('div', 'hp-metrics-modal__initial');
+
+      contentHeader = makeElement('h2', 'modal-header', 'Processing Request!');
       content.appendChild(contentHeader);
 
-      var contentLoading = makeElement('div', 'initial-loader');
+      contentLoading = makeElement('div', 'initial-loader');
 
-      var loadingText = makeElement('div', 'loading-text', 'Loading');
+      loadingText = makeElement('div', 'loading-text', 'Loading');
       contentLoading.appendChild(loadingText);
 
-      for (var _i = 1; _i <= 3; _i++){
+      for (var _i = 1; _i <= 3; _i++) {
         var loadingBar = makeElement('div', 'loader');
         loadingBar.classList.add('l' + _i);
         contentLoading.appendChild(loadingBar);
       }
 
       content.appendChild(contentLoading);
-      content.appendChild(this.createCloseButton());
+
+      content.appendChild(_.createCloseButton());
 
       return content;
     };
@@ -273,29 +316,35 @@
      * Creates and returns HTML for zip form modal.
      *
      */
-    this.createZipContent = function() {
-      var content = makeElement('div', 'hp-metrics-modal__zip');
+    _.createZipContent = function() {
+      var content,  // Container of zip form content
+          contentError,
+          contentHeader,
+          zipField,
+          zipButton;
 
-      var contentHeader = makeElement('h2', 'modal-header', 'Please Enter Your Zip.');
+      content = makeElement('div', 'hp-metrics-modal__zip');
+
+      contentHeader = makeElement('h2', 'modal-header', 'Please Enter Your Zip.');
       content.appendChild(contentHeader);
 
-      var contentZip = makeElement('div', 'zip-content');
+      contentZip = makeElement('div', 'zip-content');
 
-      var zipField = makeElement('input', 'hp-metrics-modal__zip-field');
+      zipField = makeElement('input', 'hp-metrics-modal__zip-field');
       zipField.setAttribute('name', 'zip');
       zipField.setAttribute('type', 'text');
       zipField.setAttribute('placeholder', 'Zip Code');
       contentZip.appendChild(zipField);
 
 
-      var zipButton = makeElement('button', 'hp-metrics-modal__zip-submit', 'Submit');
+      zipButton = makeElement('button', 'hp-metrics-modal__zip-submit', 'Submit');
       contentZip.appendChild(zipButton);
 
-      var contentError = makeElement('div', 'hp-metrics-modal__error');
+      contentError = makeElement('div', 'hp-metrics-modal__error');
       contentZip.appendChild(contentError);
 
       content.appendChild(contentZip);
-      content.appendChild(this.createCloseButton());
+      content.appendChild(_.createCloseButton());
 
       return content;
     };
@@ -305,49 +354,72 @@
      * Creates and returns HTML for outro modal.
      *
      */
-    this.createOutroContent = function(){
-      var content = makeElement('div', 'hp-metrics-modal__outro');
+    _.createOutroContent = function() {
+      var content,  // Container for outro elements
+          contentHeader,
+          outroText;
 
-      var contentHeader = makeElement('h2', 'modal-header', 'Thankyou!');
+      content = makeElement('div', 'hp-metrics-modal__outro');
+
+      contentHeader = makeElement('h2', 'modal-header', 'Processing Request!');
       content.appendChild(contentHeader);
 
-      var contentOutro = makeElement('div', 'outro-content');
-      var outroText = makeElement('div', 'outro-text', 'Redirecting to Somewhere!');
+      contentOutro = makeElement('div', 'outro-content');
+      outroText = makeElement('div', 'outro-text', 'Thank You!');
       contentOutro.appendChild(outroText);
       content.appendChild(contentOutro);
-      content.appendChild(this.createCloseButton());
+      content.appendChild(_.createCloseButton());
 
       return content;
     };
 
-    this.resetModal = function() {
-      modal = this.createModal();
-    }
 
-    // -------End Initialize
-    var modal = this.createModal();
+    /*
+     * Resets the modal to blank initial modal.
+     * Should beused when closing modal without redirecting.
+     */
+    _.resetModal = function() {
+      modal.hpModal('replaceContent', {content: _.createInitialContent()});
+    };
+
+    /* ------------------------------------------------------------ */
+    /* ---------------- END DEFINE PRIVATE METHODS ---------------- */
+    /* ------------------------------------------------------------ */
+
+
+    modal = _.createModal();  // Lets get this thing rollin!!
+
+    /* ----------------------------------------------------------- */
+    /* ----------------------- BIND EVENTS ----------------------- */
+    /* ----------------------------------------------------------- */
 
     // Open modal when button us clicked
-    $('[data-hp-metrics]').on('click', function(){
-      modal.hpModal('open', settings, function(){
-        _this.sendAnalytics({
-          test: 'asdf'
-        });
+    $('[data-hp-metrics]').on('click', function() {
+      _.vehicle = $(this).data('hp-metrics');
+      modal.hpModal('open', settings, function() {
+        _.sendAnalytics({vehicle: _.vehicle}, 'analytic');
       });
     });
 
-    // run submitZip when submit button is clicked.
-    $(document).on('click','.hp-metrics-modal__zip-submit', function() {
-      _this.submitZip();
+    $(document).on('click','.hp-metrics-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
+      _.submitZip();
     });
 
-    $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e){
+    $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e) {
       e.preventDefault();
       settings.removeBackground = true;
-      modal.hpModal('close', settings, function(){
-        _this.resetModal();
+      modal.hpModal('close', settings, function() {
+        _.resetModal();
       });
     });
+
+    $(document).on('focus', '.hp-metrics-modal input[data-hp-metrics__error="true"]', function() {
+      _.resolveWarning();
+    });
+
+    /* ----------------------------------------------------------- */
+    /* --------------------- END BIND EVENTS --------------------- */
+    /* ----------------------------------------------------------- */
 
   };
 
@@ -366,9 +438,9 @@
     var windowWidth = window.innerWidth;
     var modalHeight = inner.height();
     var modalWidth = inner.width();
-
     var offset = {};
-    switch(placement){
+
+    switch (placement) {
     case 'top':
       offset.top = -(windowHeight/2 + modalHeight) + 'px';
       offset.left = '50%';
@@ -395,7 +467,7 @@
 
 
   // Function: Includes stylesheet in <head> to access modal
-  function includeCSS(){
+  function includeCSS() {
     $('head').append('<link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"</link>');
   }
 
@@ -407,7 +479,7 @@
    * @params (String) elClass = 'example-class-for-object'
    * @params (String) content = 'Example text for object'
    */
-  function makeElement(elType, elClass, content){
+  function makeElement(elType, elClass, content) {
     var el = document.createElement(elType);
     el.classList.add(elClass);
     if (content) {
@@ -416,4 +488,4 @@
     return el;
   }
 
-}(jQuery));
+}(jQuery, {}));

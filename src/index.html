@@ -2,8 +2,6 @@
 <html>
   <head>
     <title>Test Page For HP Metrics Jquery Plugin</title>
-    <style>
-    </style>
   </head>
     <body>
       <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -12,15 +10,13 @@
       <script>
         $(function(){
           $.hpMetrics({
-            entrance: 'slide',
-            startPlacement: 'bottom',
-            speed: 'fast'
+            entrance: 'slide'
           });
         });
       </script>
 
       <h1>Index Page for HP Metrics Plugin</h1>
-      <button data-hp-metrics>test</button>
+      <button data-hp-metrics='{"year": "2014", "make": "Cadillac", "model": "ATS"}' >test</button>
 
     </body>
 </html>
