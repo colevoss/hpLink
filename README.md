@@ -41,3 +41,9 @@ _*defaults in bold italics_
     })
   });
 ```
+
+#### How It Works
+When the button with the hp-metrics data attribute is clicked, the HP Metrics modal will appear asking for the user to type in a zipcode if it is between the hours of 8 A.M. and 5 P.M. MST. Once a valid zipcode is supplied, the user will be directed to the [SureHits website][surehits]. If it is not between the hours of 8 A.M. and 5 P.M. MST, the user will be immediate directed to [Flexquote website][flexquote].
+
+[surehits]: https://www.surehits.com/
+[flexquote]: http://www.flexquote.com/auto-insurance
