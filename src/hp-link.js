@@ -293,14 +293,8 @@
 
       contentLoading = makeElement('div', 'initial-loader');
 
-      loadingText = makeElement('div', 'loading-text', 'Loading');
+      loadingText = makeElement('div', 'loading-text', 'Loading...');
       contentLoading.appendChild(loadingText);
-
-      for (var _i = 1; _i <= 3; _i++) {
-        var loadingBar = makeElement('div', 'loader');
-        loadingBar.classList.add('l' + _i);
-        contentLoading.appendChild(loadingBar);
-      }
 
       content.appendChild(contentLoading);
 

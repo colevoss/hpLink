@@ -1,46 +1,132 @@
+/*Container for all modal elements*/
 .hp-link-modal{
   z-index: 3000;
   display: none;
 }
+
+
+/*
+ * Translucent background.
+ * Change color by changing the rgba value
+ * as well as the hex value to the equivalent.
+ *
+ * Both are included for browser compatabilty.
+ *
+ * To keep background translucent, keep the 4th argument
+ * in the rgba between 0.1 and 0.9
+ */
 .hp-link-modal .hp-link-modal__background{
+  background: #000000;
+  background: rgba(0,0,0,0.4);
+
+  /* Needed for placement and JS interaction */
   display: none;
   width: 100%;
   height: 100%;
   position: fixed;
   top: 0;
   left: 0;
-  background: #000000;
-  background: rgba(0,0,0,0.4);
 }
 
+
+/*
+ * inner is the main part of the modal that the user interacts with.
+ *
+ */
 .hp-link-modal .hp-link-modal__inner{
-  display: none;
   background: #fff;
+  -webkit-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
+  -moz-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
+  box-shadow:4px 4px 4px rgba(0,0,0,0.4);
+
+  /* Needed for placement and JS interaction */
+  display: none;
   position: fixed;
   width: 80%;
   margin-left: -40%;
   margin-top: -20%;
   top: 50%;
   left: 50%;
-  -webkit-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
-  -moz-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
-  box-shadow:4px 4px 4px rgba(0,0,0,0.4);
 }
+
+
+/*
+ * Close button inside the modal.
+ */
 .hp-link-modal .hp-link-modal__close{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  color: #888;
+
+  /* Needed for placement and JS interaction */
   position: absolute;
   bottom: 0;
   right: 0;
   text-decoration: none;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
-  color: #888;
   margin: 5px;
-
 }
+
+
+@media (max-width: 520px){
+  .hp-link-modal .hp-link-modal__close{
+    font-size: 16px;
+    position: static;
+    display: block;
+    text-align: center;
+  }
+}
+
+
+/*
+ * Text field for entering zip
+ */
+.hp-link-modal__zip-field{
+  background: #E6E6E6;
+  color: #666;
+
+  /* Needed for placement and JS interaction */
+  width: 75%;
+  border: 0;
+  padding: 15px;
+  font-size:16px;
+  margin-right: -1px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+/*
+ * This is the header of the modal.
+ */
+.hp-link-modal__inner .modal-header{
+  background: #3A90A4;
+  color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  box-shadow: 0 2px 1px #777;
+
+  /* Needed for placement and JS interaction */
+  text-align: center;
+  font-size: 32px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: bold;
+  padding: 5px;
+}
+
+
+@media (max-width: 520px){
+  .hp-link-modal__inner .modal-header{
+    font-size: 24px;
+  }
+}
+
 
 .hp-link-modal .hp-link-modal__zip {
   position: relative;
   display: block;
 }
+
 
 .hp-link-modal .zip-content{
   text-align: center;
@@ -54,19 +140,7 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
-.hp-link-modal__zip-field{
-  width: 75%;
-  background: #E6E6E6;
-  border: 0;
-  padding: 15px;
-  font-size:16px;
-  margin-right: -1px;
-  color: #666;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -ms-box-sizing: border-box;
-  box-sizing: border-box;
-}
+
 
 .hp-link-modal__zip-field:focus{
   box-shadow: 0 0 5px #3A90A4;
@@ -74,21 +148,28 @@
   outline: none;
 }
 
+
+/*
+ * Zip code submit button
+ */
 .hp-link-modal__zip-submit{
+  background: #3A90A4;
+  color: #fff;
+
+  /* Needed for placement and JS interaction */
   padding: 15px;
   font-size: 16px;
   margin: 0;
   border: 0;
-  background: #3A90A4;
-  color: #fff;
   width: 25%;
   text-align: center;
-
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
+
+
 .hp-link-modal__zip-submit:hover{
   background: #2B6273;
 }
@@ -121,10 +202,12 @@
   }
 }
 
+
 .hp-link-modal .hp-link-modal__outro{
   position: relative;
   display: block;
 }
+
 
 .hp-link-modal .hp-link-modal__outro .outro-content {
   margin: auto;
@@ -137,6 +220,28 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
+
+
+/*
+ * loading... text
+ */
+.loading-text{
+  display: block;
+  height: 20px;
+  text-align: center;
+  margin: auto;
+  width: 100%;
+  z-index: 10;
+  top: 25%;
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
+  color: #3A90A4;
+}
+
+
+/*
+ * 'Thank You!' text
+ */
 .hp-link-modal .hp-link-modal__outro .outro-content .outro-text{
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   color: #666;
@@ -144,220 +249,22 @@
   text-align: center;
 }
 
+
 .hp-link-modal .hp-link-modal__initial{
   position: relative;
   display: block;
 }
 
-.hp-link-modal__inner .modal-header{
-  text-align: center;
-  font-size: 32px;
-  margin-top: 0;
-  margin-bottom: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
-  font-weight: bold;
-  color: #fff;
-  padding: 5px;
-  background: #3A90A4;
-  box-shadow: 0 2px 1px #777;
-}
-
-@media (max-width: 520px){
-  .hp-link-modal__inner .modal-header{
-    font-size: 24px;
-  }
-}
 
 .initial-loader{
   margin: auto;
   display: block;
-  width: 40%;
+  width: 80%;
   overflow: hidden;
   position: relative;
-  padding: 20px;
-  padding-bottom: 15px;
+  padding: 25px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   box-sizing: border-box;
-}
-
-.loader{
-  height: 7px;
-  background: #333;
-  margin-bottom: 5px;
-}
-
-.l1{
-  -webkit-animation:loader_one 5s infinite;
-  -moz-animation:loader_one 5s infinite;
-  -ms-animation:loader_one 5s infinite;
-  -o-animation:loader_one 5s infinite;
-  animation:loader_one 5s infinite;
-}
-
-@-webkit-keyframes loader_one {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 100%; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-
-}
-
-@-moz-keyframes loader_one {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 100%; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-
-}
-@-o-keyframes loader_one {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 100%; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-
-}
-@keyframes loader_one {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 100%; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-
-}
-.l2{
-  -webkit-animation:loader_two 5s infinite;
-  -moz-animation:loader_two 5s infinite;
-  -ms-animation:loader_two 5s infinite;
-  -o-animation:loader_two 5s infinite;
-  animation:loader_two 5s infinite;
-}
-
-@-webkit-keyframes loader_two {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@-moz-keyframes loader_two {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@-o-keyframes loader_two {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@keyframes loader_two {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 100%; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-
-.l3{
-  -webkit-animation:loader_three 5s infinite;
-  -moz-animation:loader_three 5s infinite;
-  -ms-animation:loader_three 5s infinite;
-  -o-animation:loader_three 5s infinite;
-  animation:loader_three 5s infinite;
-
-}
-@-webkit-keyframes loader_three {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 0; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@-moz-keyframes loader_three {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 0; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@-o-keyframes loader_three {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 0; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-@keyframes loader_three {
-  0% {width: 0; margin-left: 0}
-  20% {width: 0; margin-left: 0}
-  40% {width: 0; margin-left: 0}
-  60% {width: 0; margin-left: 0}
-  80% {width: 100%; margin-left: 0; background-color: #333}
-  100% {width: 100%; margin-left: 100%; background-color: #3A90A4}
-}
-.loading-text{
-  display: block;
-  height: 20px;
-  text-align: center;
-  position: absolute;
-  margin: auto;
-  width: 100%;
-  z-index: 10;
-  top: 25%;
-  font-size: 20px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
-  right: 100%;
-  color: #3A90A4;
-  -webkit-animation: loading-text 5s infinite;
-  -moz-animation: loading-text 5s infinite;
-  -ms-animation: loading-text 5s infinite;
-  -o-animation: loading-text 5s infinite;
-  animation: loading-text 5s infinite;
-}
-
-@-webkit-keyframes loading-text {
-  0% {right: 100%}
-  20% {right: 0; color: #3A90A4}
-  40% {right: -100%; color: #333}
-  100% {right: -100%;}
-}
-
-@-moz-keyframes loading-text {
-  0% {right: 100%}
-  20% {right: 0; color: #3A90A4}
-  40% {right: -100%; color: #333}
-  100% {right: -100%;}
-}
-
-@-o-keyframes loading-text {
-  0% {right: 100%}
-  20% {right: 0; color: #3A90A4}
-  40% {right: -100%; color: #333}
-  100% {right: -100%;}
-}
-
-@keyframes loading-text {
-  0% {right: 100%}
-  20% {right: 0; color: #3A90A4}
-  40% {right: -100%; color: #333}
-  100% {right: -100%;}
 }
