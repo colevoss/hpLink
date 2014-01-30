@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Test Page For HP Metrics Jquery Plugin</title>
-    <link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"/>
+    <title>Test Page For HP Link Jquery Plugin</title>
+    <link rel="stylesheet" href="../src/hp-link.css" type="text/css"/>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type='text/javascript'src="hp-metrics.js"></script>
+    <script type='text/javascript'src="hp-link.js"></script>
   </head>
     <body>
-      <link rel="stylesheet" href="hp-metrics.css" type="text/css" />
+      <link rel="stylesheet" href="hp-link.css" type="text/css" />
       <script>
         $(function(){
-          $.hpMetrics({
+          $.hpLink({
             entrance: 'slide'
           });
         });
       </script>
 
-      <h1>Index Page for HP Metrics Plugin</h1>
-      <button data-hp-metrics='{"year": "2014", "make": "Cadillac", "model": "ATS"}' >Has Data</button>
-      <button data-hp-metrics >Don't got no data!</button>
+      <h1>Index Page for HP Link Plugin</h1>
+      <button data-hp-link='{"year": "2014", "make": "Cadillac", "model": "ATS"}' >Has Data</button>
+      <button data-hp-link >Don't got no data!</button>
 
     </body>
 </html>

@@ -1,11 +1,11 @@
 {
-  "name": "hp-metrics",
-  "version": "0.0.6",
-  "description": "HP Metrics",
+  "name": "hpLink",
+  "version": "0.1.0",
+  "description": "HP link",
   "keywords": [
     "jquery-plugin"
   ],
-  "homepage": "https://github.com/colevoss/hp-metrics",
+  "homepage": "https://github.com/colevoss/hpLink",
   "author": {
     "name": "Cole Voss",
     "email": "voss.cole@gmail.com",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colevoss/hp-metrics.git"
+    "url": "https://github.com/colevoss/hpLink.git"
   },
   "licenses": [
     {

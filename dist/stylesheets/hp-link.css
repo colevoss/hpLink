@@ -1,8 +1,17 @@
-.hp-metrics-modal{
+/**
+ * hpLink 
+ * @version v0.0.6 
+ * @link https://github.com/colevoss/hpLink 
+ * @license  
+ * 
+ * Modify this file if you would like styling to fit more into your page. 
+ */ 
+
+.hp-link-modal{
   z-index: 3000;
   display: none;
 }
-.hp-metrics-modal .hp-metrics-modal__background{
+.hp-link-modal .hp-link-modal__background{
   display: none;
   width: 100%;
   height: 100%;
@@ -13,7 +22,7 @@
   background: rgba(0,0,0,0.4);
 }
 
-.hp-metrics-modal .hp-metrics-modal__inner{
+.hp-link-modal .hp-link-modal__inner{
   display: none;
   background: #fff;
   position: fixed;
@@ -26,7 +35,7 @@
   -moz-box-shadow:4px 4px 4px rgba(0,0,0,0.4);
   box-shadow:4px 4px 4px rgba(0,0,0,0.4);
 }
-.hp-metrics-modal .hp-metrics-modal__close{
+.hp-link-modal .hp-link-modal__close{
   position: absolute;
   bottom: 0;
   right: 0;
@@ -37,12 +46,12 @@
 
 }
 
-.hp-metrics-modal .hp-metrics-modal__zip {
+.hp-link-modal .hp-link-modal__zip {
   position: relative;
   display: block;
 }
 
-.hp-metrics-modal .zip-content{
+.hp-link-modal .zip-content{
   text-align: center;
   width: 80%;
   margin: auto;
@@ -54,7 +63,7 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
-.hp-metrics-modal__zip-field{
+.hp-link-modal__zip-field{
   width: 75%;
   background: #E6E6E6;
   border: 0;
@@ -68,13 +77,13 @@
   box-sizing: border-box;
 }
 
-.hp-metrics-modal__zip-field:focus{
+.hp-link-modal__zip-field:focus{
   box-shadow: 0 0 5px #3A90A4;
   border: 0;
   outline: none;
 }
 
-.hp-metrics-modal__zip-submit{
+.hp-link-modal__zip-submit{
   padding: 15px;
   font-size: 16px;
   margin: 0;
@@ -89,11 +98,11 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
-.hp-metrics-modal__zip-submit:hover{
+.hp-link-modal__zip-submit:hover{
   background: #2B6273;
 }
 
-.hp-metrics-modal__error{
+.hp-link-modal__error{
   color: #D1050C;
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   font-size: 14px;
@@ -103,11 +112,11 @@
 
 
 @media (max-width: 520px){
-  .hp-metrics-modal .hp-metrics-modal__zip{
+  .hp-link-modal .hp-link-modal__zip{
     font-size: 24px;
     /*height: 180px;*/
   }
-  .hp-metrics-modal__zip-submit{
+  .hp-link-modal__zip-submit{
     width: 100%;
     padding: 8px;
     -webkit-box-sizing: border-box;
@@ -115,18 +124,18 @@
     -ms-box-sizing: border-box;
     box-sizing: border-box;
   }
-  .hp-metrics-modal__zip-field{
+  .hp-link-modal__zip-field{
     width: 100%;
     margin-right: 0;
   }
 }
 
-.hp-metrics-modal .hp-metrics-modal__outro{
+.hp-link-modal .hp-link-modal__outro{
   position: relative;
   display: block;
 }
 
-.hp-metrics-modal .hp-metrics-modal__outro .outro-content {
+.hp-link-modal .hp-link-modal__outro .outro-content {
   margin: auto;
   width: 80%;
   padding: 10px;
@@ -137,19 +146,19 @@
   -ms-box-sizing: border-box;
   box-sizing: border-box;
 }
-.hp-metrics-modal .hp-metrics-modal__outro .outro-content .outro-text{
+.hp-link-modal .hp-link-modal__outro .outro-content .outro-text{
   font-family: "Helvetica Neue", Helvetica, Arial, sans serif;
   color: #666;
   font-size: 24px;
   text-align: center;
 }
 
-.hp-metrics-modal .hp-metrics-modal__initial{
+.hp-link-modal .hp-link-modal__initial{
   position: relative;
   display: block;
 }
 
-.hp-metrics-modal__inner .modal-header{
+.hp-link-modal__inner .modal-header{
   text-align: center;
   font-size: 32px;
   margin-top: 0;
@@ -163,7 +172,7 @@
 }
 
 @media (max-width: 520px){
-  .hp-metrics-modal__inner .modal-header{
+  .hp-link-modal__inner .modal-header{
     font-size: 24px;
   }
 }

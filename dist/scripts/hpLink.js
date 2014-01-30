@@ -1,3 +1,10 @@
+/**
+ * hpLink 
+ * @version v0.0.6 
+ * @link https://github.com/colevoss/hpLink 
+ * @license  
+ */ 
+
 ;(function ($, _) {
 
   $.fn.hpModal = function (action, options, cb) {
@@ -36,8 +43,8 @@
           start = settings.startPlacement;
         }
         modalEntrance[start] = '50%';
-        $('.hp-metrics-modal__background', modal.toggle()).fadeIn('fast', function() {
-          $('.hp-metrics-modal__inner', modal).toggle(true)
+        $('.hp-link-modal__background', modal.toggle()).fadeIn('fast', function() {
+          $('.hp-link-modal__inner', modal).toggle(true)
             .css(resolveInnerModalPosition(inner, settings.startPlacement))
             .animate(modalEntrance, settings.speed, cb());
         });
@@ -49,9 +56,9 @@
        * @params (jQuery object) modal
        */
       fade: function(modal) {
-        $('.hp-metrics-modal__background', modal).toggle();
+        $('.hp-link-modal__background', modal).toggle();
         modal.fadeIn('fast', function() {
-          $('.hp-metrics-modal__inner', modal).fadeIn(settings.speed, cb());
+          $('.hp-link-modal__inner', modal).fadeIn(settings.speed, cb());
         });
       }
     };
@@ -61,12 +68,12 @@
        * Slides modal out
        */
       slide: function(modal) {
-        $('.hp-metrics-modal__inner', modal)
+        $('.hp-link-modal__inner', modal)
           .animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb())
           .toggle(false);
         if (settings.removeBackground !== false){
-          $('.hp-metrics-modal__background', modal).fadeOut('fast', function() {
-            $('.hp-metrics-modal').toggle();
+          $('.hp-link-modal__background', modal).fadeOut('fast', function() {
+            $('.hp-link-modal').toggle();
           });
         }
       },
@@ -76,9 +83,9 @@
        */
       fade: function(modal) {
         modal.fadeOut('fast', function() {
-          $('.hp-metrics-modal__inner', modal).fadeOut(settings.speed, cb());
+          $('.hp-link-modal__inner', modal).fadeOut(settings.speed, cb());
           if (settings.removeBackground !== false){
-            $('.hp-metrics-modal__background', modal).fadeOut('fast');
+            $('.hp-link-modal__background', modal).fadeOut('fast');
           }
         });
       }
@@ -90,7 +97,7 @@
         break; // Break Case
 
       case 'replaceContent':
-        var inner = $('.hp-metrics-modal__inner');
+        var inner = $('.hp-link-modal__inner');
         inner.html(settings.content);
         if (typeof(cb) !== 'undefined'){
           cb();
@@ -104,7 +111,7 @@
     return this;
   };
 
-  $.hpMetrics = function(options) {
+  $.hpLink = function(options) {
     /* ---------------------------------------------------- */
     /* -------------------- INITIALIZE -------------------- */
     /* ---------------------------------------------------- */
@@ -150,7 +157,7 @@
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
-          window.console.log(err, erra, errb);
+          window.
           _.resolveWarning('An error has occured. Please try again later.');
         }
       });
@@ -215,14 +222,14 @@
           content,  // Contents of inner modal
           inner;  // Interactive portion of modal
       var modal = document.createElement('div');  // Modal container
-      modal.classList.add('hp-metrics-modal');
+      modal.classList.add('hp-link-modal');
 
       background = document.createElement('div'); // Modal Background
-      background.classList.add('hp-metrics-modal__background');
+      background.classList.add('hp-link-modal__background');
       modal.appendChild(background);
 
       inner = document.createElement('div');  // Modal inner div
-      inner.classList.add('hp-metrics-modal__inner');
+      inner.classList.add('hp-link-modal__inner');
 
       contents = _.createInitialContent();
 
@@ -240,7 +247,7 @@
      */
     _.createCloseButton = function() {
       var button;
-      button = makeElement('a', 'hp-metrics-modal__close', 'Close');
+      button = makeElement('a', 'hp-link-modal__close', 'Close');
       button.setAttribute('href', '');
 
       return button;
@@ -256,7 +263,7 @@
      *
      */
     _.submitZip = function() {
-      var zip = $('.hp-metrics-modal__zip-field').val();
+      var zip = $('.hp-link-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)){
         _.sendAnalytics({zip: zip}, 'validate_zip');
       } else {
@@ -267,11 +274,11 @@
     _.resolveWarning = function(text) {
       if (typeof(text) === 'undefined') {
         text = '';
-        $('.hp-metrics-modal__zip-field').attr('data-hp-metrics__error', 'false');
+        $('.hp-link-modal__zip-field').attr('data-hp-link__error', 'false');
       } else {
-        $('.hp-metrics-modal__zip-field').attr('data-hp-metrics__error', 'true');
+        $('.hp-link-modal__zip-field').attr('data-hp-link__error', 'true');
       }
-      $('.hp-metrics-modal__error').text(text);
+      $('.hp-link-modal__error').text(text);
     };
 
 
@@ -286,7 +293,7 @@
           contentLoading,  // Container of loading elements
           loadingText;
 
-      content = makeElement('div', 'hp-metrics-modal__initial');
+      content = makeElement('div', 'hp-link-modal__initial');
 
       contentHeader = makeElement('h2', 'modal-header', 'Processing Request!');
       content.appendChild(contentHeader);
@@ -304,7 +311,7 @@
 
       content.appendChild(contentLoading);
 
-      contentError = makeElement('div', 'hp-metrics-modal__error');
+      contentError = makeElement('div', 'hp-link-modal__error');
       contentLoading.appendChild(contentError);
 
       content.appendChild(_.createCloseButton());
@@ -324,24 +331,24 @@
           zipField,
           zipButton;
 
-      content = makeElement('div', 'hp-metrics-modal__zip');
+      content = makeElement('div', 'hp-link-modal__zip');
 
       contentHeader = makeElement('h2', 'modal-header', 'Please Enter Your Zip.');
       content.appendChild(contentHeader);
 
       contentZip = makeElement('div', 'zip-content');
 
-      zipField = makeElement('input', 'hp-metrics-modal__zip-field');
+      zipField = makeElement('input', 'hp-link-modal__zip-field');
       zipField.setAttribute('name', 'zip');
       zipField.setAttribute('type', 'text');
       zipField.setAttribute('placeholder', 'Zip Code');
       contentZip.appendChild(zipField);
 
 
-      zipButton = makeElement('button', 'hp-metrics-modal__zip-submit', 'Submit');
+      zipButton = makeElement('button', 'hp-link-modal__zip-submit', 'Submit');
       contentZip.appendChild(zipButton);
 
-      contentError = makeElement('div', 'hp-metrics-modal__error');
+      contentError = makeElement('div', 'hp-link-modal__error');
       contentZip.appendChild(contentError);
 
       content.appendChild(contentZip);
@@ -360,7 +367,7 @@
           contentHeader,
           outroText;
 
-      content = makeElement('div', 'hp-metrics-modal__outro');
+      content = makeElement('div', 'hp-link-modal__outro');
 
       contentHeader = makeElement('h2', 'modal-header', 'Processing Request!');
       content.appendChild(contentHeader);
@@ -395,19 +402,19 @@
     /* ----------------------------------------------------------- */
 
     // Open modal when button us clicked
-    $('[data-hp-metrics]').on('click', function() {
-      _.urlData = $(this).data('hp-metrics');
+    $('[data-hp-link]').on('click', function() {
+      _.urlData = $(this).data('hp-link');
       var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
       modal.hpModal('open', settings, function() {
         _.sendAnalytics(sendData, 'analytic');
       });
     });
 
-    $(document).on('click','.hp-metrics-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
+    $(document).on('click','.hp-link-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
       _.submitZip();
     });
 
-    $(document).on('click', '.hp-metrics-modal a.hp-metrics-modal__close', function(e) {
+    $(document).on('click', '.hp-link-modal a.hp-link-modal__close', function(e) {
       e.preventDefault();
       settings.removeBackground = true;
       modal.hpModal('close', settings, function() {
@@ -415,7 +422,7 @@
       });
     });
 
-    $(document).on('focus', '.hp-metrics-modal input[data-hp-metrics__error="true"]', function() {
+    $(document).on('focus', '.hp-link-modal input[data-hp-link__error="true"]', function() {
       _.resolveWarning();
     });
 
