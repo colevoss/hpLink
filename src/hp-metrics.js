@@ -172,7 +172,12 @@
 
       zipValidate: function(data) {
         if (data.zip) {
-          _.redirectURL = _.redirectURL + '&zip=' + data.zip;
+          var domain = _.redirectURL.match(/^.+\:\/\/.+\.\w{3}/)[0];
+          var params = _.redirectURL.match(/\?.+$/);
+          _.redirectURL = domain + '?zip=' + data.zip;
+          if (params) {
+           _.redirectURL = _.redirectURL + params[0].replace(/^\?/, '&');
+          }
           _.redirectPage(_.redirectURL);
         } else {
           _.resolveWarning('Invalid Zip Code.');
@@ -391,9 +396,10 @@
 
     // Open modal when button us clicked
     $('[data-hp-metrics]').on('click', function() {
-      _.vehicle = $(this).data('hp-metrics');
+      _.urlData = $(this).data('hp-metrics');
+      var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
       modal.hpModal('open', settings, function() {
-        _.sendAnalytics({vehicle: _.vehicle}, 'analytic');
+        _.sendAnalytics(sendData, 'analytic');
       });
     });
 
