@@ -32,3 +32,12 @@ _*defaults in bold italics_
 * entrace: [slide, _**fade**_]
 * startPlacement: [_**top**_, left, right, bottom]
 * speed: [_**fast**_, slow, 100-1000]
+```javascript
+  $(function(){
+    $.hpMetrics({
+      entrance: 'slide', // Modal slides into view
+      startPlacement: 'left', // Modal slides from the left side of the screen.
+      speed: 500 // Medium speed.
+    })
+  });
+```
