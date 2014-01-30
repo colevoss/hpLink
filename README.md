@@ -6,8 +6,8 @@ Metrics for HP partners
 
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/colevoss/jquery-hp-metrics/master/dist/jquery.hp-metrics.min.js
-[max]: https://raw.github.com/colevoss/jquery-hp-metrics/master/dist/jquery.hp-metrics.js
+[min]: https://github.com/colevoss/hp_metrics/blob/master/dist/scripts/hp-metrics.min.js
+[max]: https://github.com/colevoss/hp_metrics/blob/master/dist/scripts/hp-metrics.js
 
 In your web page:
 
@@ -15,17 +15,9 @@ In your web page:
 <script src="jquery.js"></script>
 <script src="dist/hp-metrics.min.js"></script>
 <script>
-jQuery(function($) {
-  $.awesome(); // "awesome"
-});
+  $.hpMetrics();
 </script>
 ```
 
 ## Documentation
 _(Coming soon)_
-
-## Examples
-_(Coming soon)_
-
-## Release History
-_(Nothing yet)_

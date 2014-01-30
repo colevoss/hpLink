@@ -8,8 +8,9 @@ var gulp = require('gulp'),
     pkg = require('./package.json'),
     jasmine = require('gulp-jasmine'),
     prompt = require('prompt'),
-    coffee = require('gulp-coffee');
-
+    coffee = require('gulp-coffee'),
+    git = require('gulp-git'),
+    wait = require('gulp-wait');
 
 /*
   Default Gulp Task. Can be ran via the following commands.
@@ -33,7 +34,6 @@ var code = function(){
   });
 }
 
-
 /*
   Build Tools. This function can be ran at command line by:
     `gulp build --type STRING`
@@ -45,9 +45,13 @@ var code = function(){
     major = first number = 1.0.0
     minor = second number = 0.1.0
     patch = third number = 0.0.1
+
+  @params (BashArg) --release Optional.
+    If this is passed, it will push the code to github
+    and create a release.
  */
 
-var buildDist = function(a, b,c){
+var buildDist = function(){
   var bumpTypes = ['major', 'minor', 'patch'];
   var bumpType = gutil.env.type;
 
@@ -66,8 +70,7 @@ var buildDist = function(a, b,c){
     result = result[Object.keys(result)[0]]
     if (result != 'y') return;
 
-    // test
-    testCode();
+    testCode(); // Run Tests
 
     // Bump Version number
     gulp.src('./package.json')
@@ -91,9 +94,22 @@ var buildDist = function(a, b,c){
     // TODO: Build CSS 
     gulp.src('src/*.css')
       .pipe(gulp.dest('dist/stylesheets'))
+
+    // Create Github Release
+    if (gutil.env.release){
+      var tagName = "v" + pkg.version;
+
+      gulp.src('./')
+        .pipe(wait(2000))
+        .pipe(git.add())
+        .pipe(git.commit("[RELEASE: "+ pkg.version +"]" + pkg.name + " " + Date.now()))
+        .pipe(git.push('origin', 'master'))
+        .pipe(git.tag(tagName, pkg.version + "Release"))
+        .pipe(git.push('origin', tagName));
+    }
+
   });
 }
-
 
 /*
   Test Tool. This function can be ran at command line by:
@@ -109,6 +125,10 @@ var testCode = function(){
     .pipe(jasmine()); // Run jasmine tests
 }
 
+
+/*
+  Bash Implementations.
+ */
 
 gulp.task('default', code);
 gulp.task('code', code);
