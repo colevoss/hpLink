@@ -118,7 +118,6 @@
       removeBackground: false
     }, options);
 
-    includeCSS();
 
     /* ---------------------------------------------------- */
     /* ------------------ END INITIALIZE ------------------ */
@@ -460,12 +459,6 @@
     }
 
     return offset;
-  }
-
-
-  // Function: Includes stylesheet in <head> to access modal
-  function includeCSS() {
-    $('head').append('<link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"</link>');
   }
 
 

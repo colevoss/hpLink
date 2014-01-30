@@ -1,6 +1,6 @@
 /**
  * hp-metrics 
- * @version v0.0.2 
+ * @version v0.0.3 
  * @link https://github.com/colevoss/hp-metrics 
  * @license  
  */ 
@@ -125,7 +125,6 @@
       removeBackground: false
     }, options);
 
-    includeCSS();
 
     /* ---------------------------------------------------- */
     /* ------------------ END INITIALIZE ------------------ */
@@ -467,12 +466,6 @@
     }
 
     return offset;
-  }
-
-
-  // Function: Includes stylesheet in <head> to access modal
-  function includeCSS() {
-    $('head').append('<link rel="stylesheet" href="../src/hp-metrics.css" type="text/css"</link>');
   }
 
 
