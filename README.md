@@ -9,18 +9,23 @@ Download the [jQuery plugin][min] and place hp-metrics[.min].js and the hp-metri
 [min]: https://github.com/colevoss/hp_metrics/tree/master/dist
 
 ###In your web page:
-After including jquery and hp-metrics[.min].js place "_$.hpMetrics()_" inside a document.ready function somehwere in your javascripts.
+After including jquery, hp-metrics[.min].js and hp-metrics[.min].css place "_$.hpMetrics()_" inside a document.ready function somehwere in your javascripts.
 
 Then add a hp-metrics data attribute to the button or link that will initialize HP Metrics modal whose value is a json representation of a vehicle.
 ```html
-<script src="jquery.js"></script>
-<script src="dist/hp-metrics.min.js"></script>
-<script>
-  $(function(){
-    $.hpMetrics();
-  });
-</script>
-<button data-hp-metrics='{"year": "2014", "make": "Cadillac", "model": "ATS"}'></button>
+<head>
+  <script src="jquery.js"></script>
+  <script src="dist/hp-metrics.min.js"></script>
+  <link rel="stylesheet" href="dist/hp-metrics.min.css" type="text/css" />
+</head>
+<body>
+  <script>
+    $(function(){
+      $.hpMetrics();
+    });
+  </script>
+  <button data-hp-metrics='{"year": "2014", "make": "Cadillac", "model": "ATS"}'></button>
+</body>
 ```
 This should prepare the button to display the HP Metrics modal when clicked.
 
