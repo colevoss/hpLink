@@ -26,4 +26,9 @@ Then add a hp-metrics data attribute to the button or link that will initialize 
 This should prepare the button to display the HP Metrics modal when clicked.
 
 ## Documentation
-_(Coming soon)_
+### Customization
+You can determin how the HP Metrics modal enters the screen by setting parameters such as:
+_*defaults in bold italics_
+* entrace: [slide, _**fade**_]
+* startPlacement: [_**top**_, left, right, bottom]
+* speed: [_**fast**_, slow, 100-1000]
