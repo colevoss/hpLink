@@ -4,13 +4,12 @@ Metrics for HP partners
 
 ## Getting Started
 
-Download the [production version][min] or the [development version][max].
+Download the [jQuery plugin][min] and place hp-metrics[.min].js and the hp-metrics[.min].css in the appropriate places.
 
-[min]: https://github.com/colevoss/hp_metrics/blob/master/dist/scripts/hp-metrics.min.js
-[max]: https://github.com/colevoss/hp_metrics/blob/master/dist/scripts/hp-metrics.js
+[min]: https://github.com/colevoss/hp_metrics/tree/master/dist
 
 ###In your web page:
-After including jquery and hp-metrics.[min.]js place "_$.hpMetrics()_" inside a document.ready function somehwere in your javascripts.
+After including jquery and hp-metrics[.min].js place "_$.hpMetrics()_" inside a document.ready function somehwere in your javascripts.
 
 Then add a hp-metrics data attribute to the button or link that will initialize HP Metrics modal whose value is a json representation of a vehicle.
 ```html
@@ -43,7 +42,4 @@ _*defaults in bold italics_
 ```
 
 ### How It Works
-When the button with the hp-metrics data attribute is clicked, the HP Metrics modal will appear asking for the user to type in a zipcode if it is between the hours of 8 A.M. and 5 P.M. MST. Once a valid zipcode is supplied, the user will be directed to the [SureHits website][surehits]. If it is not between the hours of 8 A.M. and 5 P.M. MST, the user will be immediate directed to [Flexquote website][flexquote].
-
-[surehits]: https://www.surehits.com/
-[flexquote]: http://www.flexquote.com/auto-insurance
+When the button with the hp-metrics data attribute is clicked, the user will be directed to Honest Policy partners after appropriate modals are presented.
