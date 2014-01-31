@@ -5,7 +5,7 @@
   "keywords": [
     "jquery-plugin"
   ],
-  "homepage": "https://github.com/colevoss/hpLink",
+  "homepage": "https://github.com/honestpolicy/hpLink",
   "author": {
     "name": "Cole Voss",
     "email": "voss.cole@gmail.com",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colevoss/hpLink.git"
+    "url": "https://github.com/honestpolicy/hpLink.git"
   },
   "licenses": [
     {
