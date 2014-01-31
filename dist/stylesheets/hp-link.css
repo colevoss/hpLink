@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.1.1 
+ * @version v0.2.0 
  * @link https://github.com/colevoss/hpLink 
  * @license  
  * 
@@ -51,9 +51,9 @@
   /* Needed for placement and JS interaction */
   display: none;
   position: fixed;
-  width: 80%;
-  margin-left: -40%;
-  margin-top: -20%;
+  width: 60%;
+  margin-left: -30%;
+  margin-top: -7%;
   top: 50%;
   left: 50%;
 }
@@ -75,7 +75,7 @@
 }
 
 
-@media (max-width: 520px){
+@media (max-width: 600px){
   .hp-link-modal .hp-link-modal__close{
     font-size: 16px;
     position: static;
@@ -124,7 +124,7 @@
 }
 
 
-@media (max-width: 520px){
+@media (max-width: 600px){
   .hp-link-modal__inner .modal-header{
     font-size: 24px;
   }
@@ -192,7 +192,7 @@
 }
 
 
-@media (max-width: 520px){
+@media (max-width: 600px){
   .hp-link-modal .hp-link-modal__zip{
     font-size: 24px;
     /*height: 180px;*/

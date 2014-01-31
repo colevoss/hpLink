@@ -60,10 +60,12 @@
       /*
        * Slides modal out
        */
-      slide: function(modal) {
+      slide: function(modal, cb) {
         $('.hp-link-modal__inner', modal)
-          .animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, cb())
-          .toggle(false);
+          .animate(resolveInnerModalPosition(inner, settings.startPlacement), settings.speed, function(){
+            $(this).toggle(false);
+            cb();
+          });
         if (settings.removeBackground !== false){
           $('.hp-link-modal__background', modal).fadeOut('fast', function() {
             $('.hp-link-modal').toggle();
@@ -75,11 +77,12 @@
        * Fades modal out
        */
       fade: function(modal) {
-        modal.fadeOut('fast', function() {
-          $('.hp-link-modal__inner', modal).fadeOut(settings.speed, cb());
+        $('.hp-link-modal__inner', modal).fadeOut(settings.speed, function(){
           if (settings.removeBackground !== false){
             $('.hp-link-modal__background', modal).fadeOut('fast');
           }
+          cb();
+          modal.toggle(false);
         });
       }
     };
@@ -98,7 +101,7 @@
         break; // Break Case
 
       case 'close':
-        exitMethod[settings.entrance](this);
+        exitMethod[settings.entrance](this, cb);
         break; // Break Case
     }
     return this;
@@ -140,6 +143,11 @@
      *
      */
     _.sendAnalytics = function(data, route) {
+      if (_.xhr  === true){
+        return false;
+      } else {
+        _.xhr = true;
+      }
       $.ajax({
         type: "POST",
         //url: "http://honestpolicy.com/cors/analytic", //Production
@@ -147,9 +155,11 @@
         data: data,
         crossDomain: true,
         success: function(data) {
+          _.xhr = false;
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
+          _.xhr = false;
           window.console.log(err, erra, errb);
           _.resolveWarning('An error has occured. Please try again later.');
         }
@@ -175,12 +185,16 @@
           var domain = _.redirectURL.match(/^.+\:\/\/.+\.\w{3}/)[0];
           var params = _.redirectURL.match(/\?.+$/);
           _.redirectURL = domain + '?zip=' + data.zip;
+
           if (params) {
            _.redirectURL = _.redirectURL + params[0].replace(/^\?/, '&');
           }
           _.redirectPage(_.redirectURL);
+
         } else {
-          _.resolveWarning('Invalid Zip Code.');
+          modal.hpModal('replaceContent', {content: _.createZipContent()}, function(){
+            _.resolveWarning('Invalid Zip Code.');
+          });
         }
       }
     };
@@ -257,8 +271,10 @@
      */
     _.submitZip = function() {
       var zip = $('.hp-link-modal__zip-field').val();
-      if (/^\d{5}$/.test(zip)){
-        _.sendAnalytics({zip: zip}, 'validate_zip');
+      if (/^\d{5}$/.test(zip)) {
+        modal.hpModal('replaceContent', {content: _.createOutroContent()}, function(){
+          _.sendAnalytics({zip: zip}, 'validate_zip');
+        });
       } else {
         _.resolveWarning('Invalid Zip Code.');
       }
