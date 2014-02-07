@@ -121,6 +121,8 @@
       removeBackground: false
     }, options);
 
+    _.metricsUUID = false;
+
 
     /* ---------------------------------------------------- */
     /* ------------------ END INITIALIZE ------------------ */
@@ -148,6 +150,7 @@
       } else {
         _.xhr = true;
       }
+      data.sourceURL = window.location.href
       $.ajax({
         type: "POST",
         //url: "http://honestpolicy.com/cors/analytic", //Production
@@ -156,6 +159,8 @@
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
+          _.metricsUUID = data.uuid;
+          window.console.log(_.metricsUUID);
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
@@ -269,11 +274,12 @@
      * Redirects to appropriate URL.
      *
      */
-    _.submitZip = function() {
+    _.submitZip = function(zip_button) {
       var zip = $('.hp-link-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)) {
+        var metrics = _.metricsData(zip_button);
         modal.hpModal('replaceContent', {content: _.createOutroContent()}, function(){
-          _.sendAnalytics({zip: zip}, 'validate_zip');
+          _.sendAnalytics({zip: zip, metrics: metrics}, 'validate_zip');
         });
       } else {
         _.resolveWarning('Invalid Zip Code.');
@@ -393,6 +399,27 @@
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
     };
 
+    /*
+     * Creates hash including metrics data to be passed to server
+     *
+     * @params (HTMLDom) button
+     */
+    _.metricsData = function(button) {
+      var metrics;
+      var buttonName = "";
+      if (button.tagName === 'INPUT' && button.getAttribute('type') === 'submit'){
+        buttonName = button.getAttribute('value')
+      } else {
+       buttonName = button.innerText;
+      }
+      metrics = {
+        ip: window.location.href,
+        uudi: _.metricsUUID,
+        button_name: buttonName,
+      };
+      return metrics;
+    }
+
     /* ------------------------------------------------------------ */
     /* ---------------- END DEFINE PRIVATE METHODS ---------------- */
     /* ------------------------------------------------------------ */
@@ -408,13 +435,14 @@
     $('[data-hp-link]').on('click', function() {
       _.urlData = $(this).data('hp-link');
       var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
+      sendData.metrics = _.metricsData(this);
       modal.hpModal('open', settings, function() {
         _.sendAnalytics(sendData, 'analytic');
       });
     });
 
     $(document).on('click','.hp-link-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
-      _.submitZip();
+      _.submitZip(this);
     });
 
     $(document).on('click', '.hp-link-modal a.hp-link-modal__close', function(e) {
