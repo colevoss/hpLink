@@ -160,7 +160,6 @@
         success: function(data) {
           _.xhr = false;
           _.metricsUUID = data.uuid;
-          window.console.log(_.metricsUUID);
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
@@ -172,12 +171,27 @@
     };
 
 
+    /*
+     * The functions in this hash are to be called when the server responds.
+     * The name of each function is returned by the server and then called
+     * by finding it in this hash.
+     *
+     * @params (Object) data
+     */
     _.analyticsCallBacks = {
+      /*
+       * Replaces the content of the modal with a field asking
+       * for a zipcode and sets the redirectURL var global to the plugin.
+       */
       zipRequired: function(data) {
         _.redirectURL = data.redirect_to;
         modal.hpModal('replaceContent', {content: _.createZipContent()});
       },
 
+      /*
+       * Replaces content of the modal with a thank you outro and
+       * redirects the page to the redirect url.
+       */
       zipNotRequired: function(data) {
         modal.hpModal('replaceContent', {content: _.createOutroContent()});
         modal.hpModal('close', settings, function() {
@@ -185,6 +199,11 @@
         });
       },
 
+      /*
+       * This locally validates that the zip is 5 digits
+       * and then validates the zip code at the server to make
+       * sure its a legit zip.
+       */
       zipValidate: function(data) {
         if (data.zip) {
           var domain = _.redirectURL.match(/^.+\:\/\/.+\.\w{3}/)[0];
@@ -407,11 +426,19 @@
     _.metricsData = function(button) {
       var metrics;
       var buttonName = "";
-      if (button.tagName === 'INPUT' && button.getAttribute('type') === 'submit'){
-        buttonName = button.getAttribute('value')
+      var buttonID, buttonClass, buttonText;
+      if (button.id) {
+        buttonName = button.id;
+      } else if (button.className) {
+        buttonName = button.className;
       } else {
-       buttonName = button.innerText;
+        if (button.tagName === 'INPUT' && button.getAttribute('type') === 'submit'){
+          buttonName = button.getAttribute('value')
+        } else {
+         buttonName = button.innerText;
+        }
       }
+
       metrics = {
         ip: window.location.href,
         uudi: _.metricsUUID,
