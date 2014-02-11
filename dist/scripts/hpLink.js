@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.4.1 
+ * @version v0.4.2 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -160,7 +160,7 @@
       data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
-        url: "https://staging.honestpolicy.com/cors/" + route, // Production
+        url: "https://honestpolicy.com/cors/" + route, // Production
         //url: "http://hopo.dev/cors/" + route, // Development
         data: data,
         crossDomain: true,
