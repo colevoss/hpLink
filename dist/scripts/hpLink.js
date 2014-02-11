@@ -1,7 +1,7 @@
 /**
  * hpLink 
- * @version v0.2.0 
- * @link https://github.com/colevoss/hpLink 
+ * @version v0.3.0 
+ * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
 
@@ -128,6 +128,8 @@
       removeBackground: false
     }, options);
 
+    _.metricsUUID = false;
+
 
     /* ---------------------------------------------------- */
     /* ------------------ END INITIALIZE ------------------ */
@@ -155,6 +157,7 @@
       } else {
         _.xhr = true;
       }
+      data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
         //url: "http://honestpolicy.com/cors/analytic", //Production
@@ -163,23 +166,42 @@
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
+          if (!_.metricsUUID){
+            _.metricsUUID = data.uuid;
+          }
+          window.
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
           _.xhr = false;
-          window.
+          window.console.log(err, erra, errb);
           _.resolveWarning('An error has occured. Please try again later.');
         }
       });
     };
 
 
+    /*
+     * The functions in this hash are to be called when the server responds.
+     * The name of each function is returned by the server and then called
+     * by finding it in this hash.
+     *
+     * @params (Object) data
+     */
     _.analyticsCallBacks = {
+      /*
+       * Replaces the content of the modal with a field asking
+       * for a zipcode and sets the redirectURL var global to the plugin.
+       */
       zipRequired: function(data) {
         _.redirectURL = data.redirect_to;
         modal.hpModal('replaceContent', {content: _.createZipContent()});
       },
 
+      /*
+       * Replaces content of the modal with a thank you outro and
+       * redirects the page to the redirect url.
+       */
       zipNotRequired: function(data) {
         modal.hpModal('replaceContent', {content: _.createOutroContent()});
         modal.hpModal('close', settings, function() {
@@ -187,6 +209,11 @@
         });
       },
 
+      /*
+       * This locally validates that the zip is 5 digits
+       * and then validates the zip code at the server to make
+       * sure its a legit zip.
+       */
       zipValidate: function(data) {
         if (data.zip) {
           var domain = _.redirectURL.match(/^.+\:\/\/.+\.\w{3}/)[0];
@@ -196,7 +223,8 @@
           if (params) {
            _.redirectURL = _.redirectURL + params[0].replace(/^\?/, '&');
           }
-          _.redirectPage(_.redirectURL);
+          // _.redirectPage(_.redirectURL);
+          modal.hpModal('replaceContent', {content: _.createSureHitsIframe(data.url)});
 
         } else {
           modal.hpModal('replaceContent', {content: _.createZipContent()}, function(){
@@ -209,7 +237,7 @@
 
     /*
      * Redirects page to new url with formatted params if provided
-     * 
+     *
      * @params (String) url
      * @params (Object) params
      */
@@ -223,6 +251,21 @@
         redirectTo = redirectTo.replace(/&$/, '');
       }
       window.location.assign(redirectTo);
+    };
+
+    _.createSureHitsIframe = function(url) {
+      var content, contentHeader, iframe;
+      
+      content = makeElement('div', 'iframe-content');
+      contentHeader = makeElement('h2', 'modal-header', 'Carriers in your area!');
+      content.appendChild(contentHeader);
+      
+      iframe = makeElement('iframe', 'sure-hits-iframe');
+      iframe.setAttribute('src', url);
+      
+      content.appendChild(iframe);
+
+      return content;
     };
 
 
@@ -276,11 +319,12 @@
      * Redirects to appropriate URL.
      *
      */
-    _.submitZip = function() {
+    _.submitZip = function(zip_button) {
       var zip = $('.hp-link-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)) {
+        var metrics = _.metricsData(zip_button);
         modal.hpModal('replaceContent', {content: _.createOutroContent()}, function(){
-          _.sendAnalytics({zip: zip}, 'validate_zip');
+          _.sendAnalytics({zip: zip, metrics: metrics}, 'validate_zip');
         });
       } else {
         _.resolveWarning('Invalid Zip Code.');
@@ -400,6 +444,37 @@
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
     };
 
+    /*
+     * Creates hash including metrics data to be passed to server
+     *
+     * @params (HTMLDom) button
+     */
+    _.metricsData = function(button) {
+      var metrics;
+      var buttonName = "";
+      var buttonID, buttonClass, buttonText;
+      if (button.id) {
+        buttonName = button.id;
+      } else if (button.className) {
+        buttonName = button.className;
+      } else {
+        if (button.tagName === 'INPUT' && button.getAttribute('type') === 'submit'){
+          buttonName = button.getAttribute('value');
+        } else {
+         buttonName = button.innerText;
+        }
+      }
+
+      metrics = {
+        url: window.location.href,
+        uuid: _.metricsUUID,
+        button_name: buttonName,
+      };
+      
+      window.console.log(metrics);
+      return metrics;
+    };
+
     /* ------------------------------------------------------------ */
     /* ---------------- END DEFINE PRIVATE METHODS ---------------- */
     /* ------------------------------------------------------------ */
@@ -415,13 +490,14 @@
     $('[data-hp-link]').on('click', function() {
       _.urlData = $(this).data('hp-link');
       var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
+      sendData.metrics = _.metricsData(this);
       modal.hpModal('open', settings, function() {
         _.sendAnalytics(sendData, 'analytic');
       });
     });
 
     $(document).on('click','.hp-link-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
-      _.submitZip();
+      _.submitZip(this);
     });
 
     $(document).on('click', '.hp-link-modal a.hp-link-modal__close', function(e) {

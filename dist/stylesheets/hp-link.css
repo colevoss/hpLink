@@ -1,7 +1,7 @@
 /**
  * hpLink 
- * @version v0.2.0 
- * @link https://github.com/colevoss/hpLink 
+ * @version v0.3.0 
+ * @link https://github.com/honestpolicy/hpLink 
  * @license  
  * 
  * Modify this file if you would like styling to fit more into your page. 
@@ -53,7 +53,7 @@
   position: fixed;
   width: 60%;
   margin-left: -30%;
-  margin-top: -7%;
+  margin-top: -20%;
   top: 50%;
   left: 50%;
 }
@@ -134,6 +134,12 @@
 .hp-link-modal .hp-link-modal__zip {
   position: relative;
   display: block;
+}
+
+.sure-hits-iframe{
+  border: none;
+  height: 460px;
+  width: 100%;
 }
 
 

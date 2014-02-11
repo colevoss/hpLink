@@ -150,7 +150,7 @@
       } else {
         _.xhr = true;
       }
-      data.sourceURL = window.location.href
+      data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
         //url: "http://honestpolicy.com/cors/analytic", //Production
@@ -159,7 +159,10 @@
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
-          _.metricsUUID = data.uuid;
+          if (!_.metricsUUID){
+            _.metricsUUID = data.uuid;
+          }
+          window.console.log(_.metricsUUID);
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
@@ -213,7 +216,8 @@
           if (params) {
            _.redirectURL = _.redirectURL + params[0].replace(/^\?/, '&');
           }
-          _.redirectPage(_.redirectURL);
+          // _.redirectPage(_.redirectURL);
+          modal.hpModal('replaceContent', {content: _.createSureHitsIframe(data.url)});
 
         } else {
           modal.hpModal('replaceContent', {content: _.createZipContent()}, function(){
@@ -226,7 +230,7 @@
 
     /*
      * Redirects page to new url with formatted params if provided
-     * 
+     *
      * @params (String) url
      * @params (Object) params
      */
@@ -240,6 +244,21 @@
         redirectTo = redirectTo.replace(/&$/, '');
       }
       window.location.assign(redirectTo);
+    };
+
+    _.createSureHitsIframe = function(url) {
+      var content, contentHeader, iframe;
+      
+      content = makeElement('div', 'iframe-content');
+      contentHeader = makeElement('h2', 'modal-header', 'Carriers in your area!');
+      content.appendChild(contentHeader);
+      
+      iframe = makeElement('iframe', 'sure-hits-iframe');
+      iframe.setAttribute('src', url);
+      
+      content.appendChild(iframe);
+
+      return content;
     };
 
 
@@ -433,19 +452,21 @@
         buttonName = button.className;
       } else {
         if (button.tagName === 'INPUT' && button.getAttribute('type') === 'submit'){
-          buttonName = button.getAttribute('value')
+          buttonName = button.getAttribute('value');
         } else {
          buttonName = button.innerText;
         }
       }
 
       metrics = {
-        ip: window.location.href,
-        uudi: _.metricsUUID,
+        url: window.location.href,
+        uuid: _.metricsUUID,
         button_name: buttonName,
       };
+      
+      window.console.log(metrics);
       return metrics;
-    }
+    };
 
     /* ------------------------------------------------------------ */
     /* ---------------- END DEFINE PRIVATE METHODS ---------------- */

@@ -44,7 +44,7 @@
   position: fixed;
   width: 60%;
   margin-left: -30%;
-  margin-top: -7%;
+  margin-top: -20%;
   top: 50%;
   left: 50%;
 }
@@ -125,6 +125,12 @@
 .hp-link-modal .hp-link-modal__zip {
   position: relative;
   display: block;
+}
+
+.sure-hits-iframe{
+  border: none;
+  height: 460px;
+  width: 100%;
 }
 
 
