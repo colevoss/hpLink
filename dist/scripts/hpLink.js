@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.3.0 
+ * @version v0.4.1 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -160,8 +160,8 @@
       data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
-        //url: "http://honestpolicy.com/cors/analytic", //Production
-        url: "http://hopo.dev/cors/" + route, // Development
+        url: "https://staging.honestpolicy.com/cors/" + route, // Production
+        //url: "http://hopo.dev/cors/" + route, // Development
         data: data,
         crossDomain: true,
         success: function(data) {
@@ -169,12 +169,10 @@
           if (!_.metricsUUID){
             _.metricsUUID = data.uuid;
           }
-          window.
           _.analyticsCallBacks[data.callback](data);
         },
         error: function(err, erra, errb) {
           _.xhr = false;
-          window.console.log(err, erra, errb);
           _.resolveWarning('An error has occured. Please try again later.');
         }
       });
@@ -255,14 +253,14 @@
 
     _.createSureHitsIframe = function(url) {
       var content, contentHeader, iframe;
-      
+
       content = makeElement('div', 'iframe-content');
       contentHeader = makeElement('h2', 'modal-header', 'Carriers in your area!');
       content.appendChild(contentHeader);
-      
+
       iframe = makeElement('iframe', 'sure-hits-iframe');
       iframe.setAttribute('src', url);
-      
+
       content.appendChild(iframe);
 
       return content;
@@ -470,8 +468,7 @@
         uuid: _.metricsUUID,
         button_name: buttonName,
       };
-      
-      window.console.log(metrics);
+
       return metrics;
     };
 
