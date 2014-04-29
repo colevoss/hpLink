@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.5.1 
+ * @version v0.5.2 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -17,7 +17,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options.modalOptions);
+    }, options);
 
 
     entranceMethod = {
@@ -126,6 +126,7 @@
       application: 'jQuery',
       line: options.line,
       key: options.key,
+      monetizer: 'SureHits', // This is to specify a specific monetizer for test purposes only
       data: null,
       soure_url: window.location.href,
       uuid: false
@@ -138,7 +139,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options.modalOptions);
+    }, options);
 
 
     /* ---------------------------------------------------- */
@@ -167,8 +168,6 @@
       } else {
         _.xhr = true;
       }
-      
-      //data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
         //url: "https://honestpolicy.com/cors/" + route, // Production
@@ -184,7 +183,9 @@
             //_.metricsUUID = data.uuid;
             _.apiData.uuid = data.uuid;
           }
-          _.analyticsCallBacks[data.callback](data);
+          if (data.callback) {
+            _.analyticsCallBacks[data.callback](data);
+          }
         },
         error: function(err, erra, errb) {
           _.xhr = false;
@@ -276,7 +277,10 @@
       iframe = makeElement('iframe', 'sure-hits-iframe');
       iframe.setAttribute('src', url);
 
+
       content.appendChild(iframe);
+
+      content.appendChild(_.createCloseButton());
 
       return content;
     };
@@ -344,6 +348,7 @@
         _.resolveWarning('Invalid Zip Code.');
       }
     };
+
 
     _.resolveWarning = function(text) {
       if (typeof(text) === 'undefined') {
@@ -523,6 +528,9 @@
       e.preventDefault();
       settings.removeBackground = true;
       modal.hpModal('close', settings, function() {
+        closedWindow = $('.hp-link-modal__inner').children().attr('class');
+        sendData = {event: 'close_window', data: {closed_window: closedWindow}};
+        _.sendAnalytics(sendData, 'close_click');
         _.resetModal();
       });
     });
