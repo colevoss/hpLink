@@ -10,7 +10,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options);
+    }, options.modalOptions);
 
 
     entranceMethod = {
@@ -121,8 +121,8 @@
       key: options.key,
       data: null,
       soure_url: window.location.href,
-      uuid: null
-    }
+      uuid: false
+    };
 
     var modal; // Local variable set to createModal() below
 
@@ -131,12 +131,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options);
-
-
-    // TODO: Get rid of this when its totally fine
-    // that uuid is in _.apiData
-    //_.metricsUUID = false;
+    }, options.modalOptions);
 
 
     /* ---------------------------------------------------- */
@@ -166,13 +161,14 @@
         _.xhr = true;
       }
       console.log(_.combineData(data));
-      data.sourceURL = window.location.href;
+      //data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
         //url: "https://honestpolicy.com/cors/" + route, // Production
         url: "http://integral.dev/cors/" + route, // Production
         //url: "http://hopo.dev/cors/" + route, // Development
-        data: data,
+        //data: data,
+        data: _.combineData(data),
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
@@ -332,9 +328,10 @@
     _.submitZip = function(zip_button) {
       var zip = $('.hp-link-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)) {
-        var metrics = _.metricsData(zip_button);
+        var sendData = {zip: zip};
+        sendData.event = 'zipcode_lookup';
         modal.hpModal('replaceContent', {content: _.createOutroContent()}, function(){
-          _.sendAnalytics({zip: zip, metrics: metrics}, 'validate_zip');
+          _.sendAnalytics(sendData, 'validate_zip');
         });
       } else {
         _.resolveWarning('Invalid Zip Code.');
@@ -486,8 +483,8 @@
     };
 
     _.combineData = function(data) {
-      return $.extend(_.apiData, data)
-    }
+      return $.extend(_.apiData, data);
+    };
 
     /* ------------------------------------------------------------ */
     /* ---------------- END DEFINE PRIVATE METHODS ---------------- */
@@ -505,7 +502,7 @@
       _.urlData = $(this).data('hp-link');
       var sendData = _.urlData !== "" ? {data: _.urlData} : {};
       //sendData.metrics = _.metricsData(this);
-      sendData['event'] = 'create_lead'
+      sendData.event = 'create_lead';
       modal.hpModal('open', settings, function() {
         _.sendAnalytics(sendData, 'submit_lead');
       });

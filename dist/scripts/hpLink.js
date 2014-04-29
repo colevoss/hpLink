@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.4.2 
+ * @version v0.5.1 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -17,7 +17,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options);
+    }, options.modalOptions);
 
 
     entranceMethod = {
@@ -119,6 +119,18 @@
     /* -------------------- INITIALIZE -------------------- */
     /* ---------------------------------------------------- */
 
+    // Data to be sent to the integral API
+    // This object will have other information added
+    // to it when sent to
+    _.apiData = {
+      application: 'jQuery',
+      line: options.line,
+      key: options.key,
+      data: null,
+      soure_url: window.location.href,
+      uuid: false
+    };
+
     var modal; // Local variable set to createModal() below
 
     var settings = $.extend({  // Set default Options
@@ -126,9 +138,7 @@
       startPlacement: 'top',
       speed: 'fast',
       removeBackground: false
-    }, options);
-
-    _.metricsUUID = false;
+    }, options.modalOptions);
 
 
     /* ---------------------------------------------------- */
@@ -142,7 +152,7 @@
     /* ------------------------------------------------------------ */
 
     /*
-     * Sends Analytic information to Hopo database.
+     * Sends Analytic information to Integral database.
      *
      * @private
      * @type {Function}
@@ -157,17 +167,22 @@
       } else {
         _.xhr = true;
       }
-      data.sourceURL = window.location.href;
+      
+      //data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
-        url: "https://honestpolicy.com/cors/" + route, // Production
+        //url: "https://honestpolicy.com/cors/" + route, // Production
+        url: "http://integral.dev/cors/" + route, // Production
         //url: "http://hopo.dev/cors/" + route, // Development
-        data: data,
+        //data: data,
+        data: _.combineData(data),
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
-          if (!_.metricsUUID){
-            _.metricsUUID = data.uuid;
+          //if (!_.metricsUUID){
+          if (!_.apiData.uuid){
+            //_.metricsUUID = data.uuid;
+            _.apiData.uuid = data.uuid;
           }
           _.analyticsCallBacks[data.callback](data);
         },
@@ -320,9 +335,10 @@
     _.submitZip = function(zip_button) {
       var zip = $('.hp-link-modal__zip-field').val();
       if (/^\d{5}$/.test(zip)) {
-        var metrics = _.metricsData(zip_button);
+        var sendData = {zip: zip};
+        sendData.event = 'zipcode_lookup';
         modal.hpModal('replaceContent', {content: _.createOutroContent()}, function(){
-          _.sendAnalytics({zip: zip, metrics: metrics}, 'validate_zip');
+          _.sendAnalytics(sendData, 'validate_zip');
         });
       } else {
         _.resolveWarning('Invalid Zip Code.');
@@ -442,6 +458,7 @@
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
     };
 
+
     /*
      * Creates hash including metrics data to be passed to server
      *
@@ -465,11 +482,15 @@
 
       metrics = {
         url: window.location.href,
-        uuid: _.metricsUUID,
+        //uuid: _.metricsUUID,
         button_name: buttonName,
       };
 
       return metrics;
+    };
+
+    _.combineData = function(data) {
+      return $.extend(_.apiData, data);
     };
 
     /* ------------------------------------------------------------ */
@@ -486,10 +507,11 @@
     // Open modal when button us clicked
     $('[data-hp-link]').on('click', function() {
       _.urlData = $(this).data('hp-link');
-      var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
-      sendData.metrics = _.metricsData(this);
+      var sendData = _.urlData !== "" ? {data: _.urlData} : {};
+      //sendData.metrics = _.metricsData(this);
+      sendData.event = 'create_lead';
       modal.hpModal('open', settings, function() {
-        _.sendAnalytics(sendData, 'analytic');
+        _.sendAnalytics(sendData, 'submit_lead');
       });
     });
 
