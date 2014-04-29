@@ -112,6 +112,18 @@
     /* -------------------- INITIALIZE -------------------- */
     /* ---------------------------------------------------- */
 
+    // Data to be sent to the integral API
+    // This object will have other information added
+    // to it when sent to
+    _.apiData = {
+      application: 'jQuery',
+      line: options.line,
+      key: options.key,
+      data: null,
+      soure_url: window.location.href,
+      uuid: null
+    }
+
     var modal; // Local variable set to createModal() below
 
     var settings = $.extend({  // Set default Options
@@ -121,7 +133,10 @@
       removeBackground: false
     }, options);
 
-    _.metricsUUID = false;
+
+    // TODO: Get rid of this when its totally fine
+    // that uuid is in _.apiData
+    //_.metricsUUID = false;
 
 
     /* ---------------------------------------------------- */
@@ -135,7 +150,7 @@
     /* ------------------------------------------------------------ */
 
     /*
-     * Sends Analytic information to Hopo database.
+     * Sends Analytic information to Integral database.
      *
      * @private
      * @type {Function}
@@ -150,17 +165,21 @@
       } else {
         _.xhr = true;
       }
+      console.log(_.combineData(data));
       data.sourceURL = window.location.href;
       $.ajax({
         type: "POST",
-        url: "https://honestpolicy.com/cors/" + route, // Production
+        //url: "https://honestpolicy.com/cors/" + route, // Production
+        url: "http://integral.dev/cors/" + route, // Production
         //url: "http://hopo.dev/cors/" + route, // Development
         data: data,
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
-          if (!_.metricsUUID){
-            _.metricsUUID = data.uuid;
+          //if (!_.metricsUUID){
+          if (!_.apiData.uuid){
+            //_.metricsUUID = data.uuid;
+            _.apiData.uuid = data.uuid;
           }
           _.analyticsCallBacks[data.callback](data);
         },
@@ -435,6 +454,7 @@
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
     };
 
+
     /*
      * Creates hash including metrics data to be passed to server
      *
@@ -458,12 +478,16 @@
 
       metrics = {
         url: window.location.href,
-        uuid: _.metricsUUID,
+        //uuid: _.metricsUUID,
         button_name: buttonName,
       };
 
       return metrics;
     };
+
+    _.combineData = function(data) {
+      return $.extend(_.apiData, data)
+    }
 
     /* ------------------------------------------------------------ */
     /* ---------------- END DEFINE PRIVATE METHODS ---------------- */
@@ -479,10 +503,11 @@
     // Open modal when button us clicked
     $('[data-hp-link]').on('click', function() {
       _.urlData = $(this).data('hp-link');
-      var sendData = _.urlData !== "" ? {urlData: _.urlData} : {};
-      sendData.metrics = _.metricsData(this);
+      var sendData = _.urlData !== "" ? {data: _.urlData} : {};
+      //sendData.metrics = _.metricsData(this);
+      sendData['event'] = 'create_lead'
       modal.hpModal('open', settings, function() {
-        _.sendAnalytics(sendData, 'analytic');
+        _.sendAnalytics(sendData, 'submit_lead');
       });
     });
 
