@@ -11,7 +11,7 @@ Download the [jQuery plugin][min] and place hp-link[.min].js and the hp-link[.mi
 ###In your web page:
 After including jquery, hp-link[.min].js and hp-link[.min].css place "_$.hpLink()_" inside a document.ready function somehwere in your javascripts.
 
-Then add a hp-link data attribute to the button or link that will initialize HP Link modal whose value is a json representation of a vehicle.
+Then add a hp-link data attribute to the button or link that will initialize HP Link modal. If you are sending data about a certain item, carrier, or policy you can set the value of the data-hp-link attribute to a JSON representation of it.
 ```html
 <head>
   <script src="jquery.js"></script>
@@ -21,9 +21,14 @@ Then add a hp-link data attribute to the button or link that will initialize HP 
 <body>
   <script>
     $(function(){
-      $.hpLink();
+      $.hpLink({
+        line: 'home',
+        key: '<Your HP Key>'
+      });
     });
   </script>
+  <a href='#' data-hp-link></a>
+  <button data-hp-link></button>
   <button data-hp-link='{"year": "2014", "make": "Cadillac", "model": "ATS"}'></button>
 </body>
 ```
@@ -34,14 +39,20 @@ This should prepare the button to display the HP Link modal when clicked.
 You can determin how the HP Link modal enters the screen by setting parameters such as:
 _*defaults in bold italics_
 * entrace: [slide, _**fade**_]
-* startPlacement: [_**top**_, left, right, bottom]
+* startPlacement: [_**top**_, left]
 * speed: [_**fast**_, slow, 100-1000]
+
+You will also need to include two attributes to indicate the line of business and your HonestPolicy Lead Source key.
+* line: [home, auto, health, life]
+* key: (Key provided to you by HonestPolicy)
 ```javascript
   $(function(){
     $.hpLink({
+      line: 'home',
+      key: '<your HP Key>',
       entrance: 'slide', // Modal slides into view
       startPlacement: 'left', // Modal slides from the left side of the screen.
-      speed: 500 // Medium speed.
+      speed: 500, // Medium speed.
     })
   });
 ```
