@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.6.0 
+ * @version v0.6.1 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -125,7 +125,6 @@
     _.apiData = {
       application: 'jQuery',
       line: options.line,
-      monetizier: 'SureHits',
       key: options.key,
       data: null,
       soure_url: window.location.href,

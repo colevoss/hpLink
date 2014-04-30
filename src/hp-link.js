@@ -118,7 +118,6 @@
     _.apiData = {
       application: 'jQuery',
       line: options.line,
-      monetizier: 'SureHits',
       key: options.key,
       data: null,
       soure_url: window.location.href,
