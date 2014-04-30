@@ -119,7 +119,6 @@
       application: 'jQuery',
       line: options.line,
       key: options.key,
-      monetizer: 'SureHits', // This is to specify a specific monetizer for test purposes only
       data: null,
       soure_url: window.location.href,
       uuid: false
@@ -152,8 +151,6 @@
      * @type {Function}
      * @params {Object} data - What is sent for Analytic Tracking
      *
-     * TODO: Break response types into different functions.
-     *
      */
     _.sendAnalytics = function(data, route) {
       if (_.xhr  === true){
@@ -163,17 +160,12 @@
       }
       $.ajax({
         type: "POST",
-        //url: "https://honestpolicy.com/cors/" + route, // Production
         url: "http://integral.dev/cors/" + route, // Production
-        //url: "http://hopo.dev/cors/" + route, // Development
-        //data: data,
         data: _.combineData(data),
         crossDomain: true,
         success: function(data) {
           _.xhr = false;
-          //if (!_.metricsUUID){
           if (!_.apiData.uuid){
-            //_.metricsUUID = data.uuid;
             _.apiData.uuid = data.uuid;
           }
           if (data.callback) {
@@ -260,6 +252,12 @@
       window.location.assign(redirectTo);
     };
 
+
+    /*
+     * Creates iframe for SureHits results to be displayed
+     *
+     * @params (String) url
+     */
     _.createSureHitsIframe = function(url) {
       var content, contentHeader, iframe;
 
@@ -343,6 +341,11 @@
     };
 
 
+    /*
+     * Shows various warnings or removes warning if no argument
+     *
+     * @params (String) text
+     */
     _.resolveWarning = function(text) {
       if (typeof(text) === 'undefined') {
         text = '';
@@ -414,6 +417,7 @@
       zipField.setAttribute('name', 'zip');
       zipField.setAttribute('type', 'text');
       zipField.setAttribute('placeholder', 'Zip Code');
+      zipField.setAttribute('autofocus', '');
       zipForm.appendChild(zipField);
 
       zipButton = makeElement('input', 'hp-link-modal__zip-submit');
@@ -460,7 +464,7 @@
 
     /*
      * Resets the modal to blank initial modal.
-     * Should beused when closing modal without redirecting.
+     * Should be used when closing modal without redirecting.
      */
     _.resetModal = function() {
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
@@ -497,6 +501,13 @@
       return metrics;
     };
 
+
+    /*
+     * Creates object to send to server with settings from initialization
+     * and data that is passed into this function
+     *
+     * @params (Object) data
+     */
     _.combineData = function(data) {
       return $.extend(_.apiData, data);
     };
