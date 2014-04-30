@@ -22,7 +22,7 @@ Then add a hp-link data attribute to the button or link that will initialize HP 
   <script>
     $(function(){
       $.hpLink({
-        line: 'home',
+        line: 'auto',
         key: '<Your HP Key>'
       });
     });
