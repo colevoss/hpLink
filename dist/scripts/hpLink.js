@@ -1,6 +1,6 @@
 /**
  * hpLink 
- * @version v0.5.5 
+ * @version v0.6.0 
  * @link https://github.com/honestpolicy/hpLink 
  * @license  
  */ 
@@ -125,6 +125,7 @@
     _.apiData = {
       application: 'jQuery',
       line: options.line,
+      monetizier: 'SureHits',
       key: options.key,
       data: null,
       soure_url: window.location.href,
@@ -231,6 +232,7 @@
           }
           // _.redirectPage(_.redirectURL);
           modal.hpModal('replaceContent', {content: _.createSureHitsIframe(data.url)});
+          $('.hp-link-modal__inner').css('margin-top', '-20%');
 
         } else {
           modal.hpModal('replaceContent', {content: _.createZipContent()}, function(){
@@ -475,6 +477,7 @@
      */
     _.resetModal = function() {
       modal.hpModal('replaceContent', {content: _.createInitialContent()});
+      $('.hp-link-modal__inner').css('margin-top', '-8%');
     };
 
 
