@@ -403,16 +403,26 @@
       content.appendChild(contentHeader);
 
       contentZip = makeElement('div', 'zip-content');
+      
+      zipForm = makeElement('form', 'hp-link-modal__zip-form');
+      zipForm.id = 'js_zip-form';
+      zipForm.setAttribute('name', 'zip-form');
+      zipForm.setAttribute('action', '#');
+
 
       zipField = makeElement('input', 'hp-link-modal__zip-field');
       zipField.setAttribute('name', 'zip');
       zipField.setAttribute('type', 'text');
       zipField.setAttribute('placeholder', 'Zip Code');
-      contentZip.appendChild(zipField);
+      zipForm.appendChild(zipField);
 
+      zipButton = makeElement('input', 'hp-link-modal__zip-submit');
+      zipButton.setAttribute('type', 'submit');
+      zipButton.setAttribute('value', 'Submit');
 
-      zipButton = makeElement('button', 'hp-link-modal__zip-submit', 'Submit');
-      contentZip.appendChild(zipButton);
+      zipForm.appendChild(zipButton);
+
+      contentZip.appendChild(zipForm);
 
       contentError = makeElement('div', 'hp-link-modal__error');
       contentZip.appendChild(contentError);
@@ -513,7 +523,10 @@
       });
     });
 
-    $(document).on('click','.hp-link-modal__zip-submit', function() {  // run submitZip when submit button is clicked.
+
+    // run submitZip when submit button is clicked.
+    $(document).on('submit', 'form.hp-link-modal__zip-form', function(e) {
+      e.preventDefault();
       _.submitZip(this);
     });
 
