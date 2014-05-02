@@ -11,7 +11,12 @@ Download the [jQuery plugin][min] and place hp-link[.min].js and the hp-link[.mi
 ###In your web page:
 After including jquery, hp-link[.min].js and hp-link[.min].css place "_$.hpLink()_" inside a document.ready function somehwere in your javascripts.
 
-Then add a hp-link data attribute to the button or link that will initialize HP Link modal. If you are sending data about a certain item, carrier, or policy you can set the value of the data-hp-link attribute to a JSON representation of it.
+Then add a hp-link data attribute to the button or link that will initialize HP Link modal. The data-hp-link attribute will need to include the following attributes:
+* type: [button, ad-static, ad-targeted]
+* name: _This can be any unique identifier for that button._
+* desc: _**Optional**_ anything that describes the button. Position on page, usage, etc.
+
+The value of the data-hp-link attribute needs to be in the form of a JSON string. eg: '{"type": "button", "name": "find-auto-insurance"}'
 ```html
 <head>
   <script src="jquery.js"></script>
@@ -28,8 +33,10 @@ Then add a hp-link data attribute to the button or link that will initialize HP 
     });
   </script>
   <a href='#' data-hp-link></a>
-  <button data-hp-link></button>
-  <button data-hp-link='{"year": "2014", "make": "Cadillac", "model": "ATS"}'></button>
+  <button data-hp-link='{"type": "button", "name": "find-auto-insurance"}'></button>
+  <a href='#' data-hp-link='{"type": "ad-static", "name": "top-banner-nebraska-1", "desc": "Banner at top of page"}'>
+    <img src='{img-source}' width='400'/>
+  </a>
 </body>
 ```
 This should prepare the button to display the HP Link modal when clicked.
