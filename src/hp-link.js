@@ -120,7 +120,7 @@
       line: options.line,
       key: options.key,
       data: null,
-      soure_url: window.location.href,
+      source_url: window.location.href,
       uuid: false
     };
 
@@ -158,9 +158,11 @@
       } else {
         _.xhr = true;
       }
+      _.apiData.data = null;
       $.ajax({
         type: "POST",
-        url: "http://integral.dev/cors/" + route, // Production
+        //url: "http://integral.dev/cors/" + route, // Production
+        url: "http://integral.honestpolicy.com/cors/" + route, // Production
         data: _.combineData(data),
         crossDomain: true,
         success: function(data) {
@@ -528,7 +530,8 @@
     // Open modal when button us clicked
     $('[data-hp-link]').on('click', function() {
       _.urlData = $(this).data('hp-link');
-      var sendData = _.urlData !== "" ? {data: _.urlData} : {};
+      var sendData = $(this).data('hp-link');
+      //var sendData = _.urlData !== "" ? {data: _.urlData} : {};
       //sendData.metrics = _.metricsData(this);
       sendData.event = 'create_lead';
       modal.hpModal('open', settings, function() {
