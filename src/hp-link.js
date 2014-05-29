@@ -290,14 +290,14 @@
           content,  // Contents of inner modal
           inner;  // Interactive portion of modal
       var modal = document.createElement('div');  // Modal container
-      modal.classList.add('hp-link-modal');
+      modal.className += ' hp-link-modal';
 
       background = document.createElement('div'); // Modal Background
-      background.classList.add('hp-link-modal__background');
+      background.className += ' hp-link-modal__background';
       modal.appendChild(background);
 
       inner = document.createElement('div');  // Modal inner div
-      inner.classList.add('hp-link-modal__inner');
+      inner.className += ' hp-link-modal__inner';
 
       contents = _.createInitialContent();
 
@@ -619,7 +619,7 @@
    */
   function makeElement(elType, elClass, content) {
     var el = document.createElement(elType);
-    el.classList.add(elClass);
+    el.className += ' ' + elClass;
     if (content) {
       el.innerHTML = content;
     }
